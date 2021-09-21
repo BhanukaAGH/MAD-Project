@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Blogosphere</string>
+    <string name="Following">Following</string>
+    <string name="Story_title">Story Title</string>
+    <string name="Story_desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="Story_date">27 Jun</string>
+    <string name="Follower_name">Name</string>
+    <string name="txt_close">Close</string>
+    <string name="txt_Publish">Publish</string>
+    <string name="write_story">Write Your Story</string>
+    <string name="add_tags">Add tags</string>
+    <string name="edt_add_tag">Add Tag</string>
+    <string name="tag_name">Tag Name</string>
+    <string name="write_one_story">Write a story</string>
+    <string name="txt_create">Create</string>
+    <string name="write_story_desc">Blogosphere Stories are the easiest way to share your ideas with the world.</string>
+    <string name="sign_in">Sign In</string>
+    <string name="edt_Email">Email</string>
+    <string name="edt_Password">Password</string>
+    <string name="not_register">Not registered yet</string>
+    <string name="sign_up_here">Sign Up here</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_register">Already registered</string>
+    <string name="sign_in_here">Sign In here</string>
+    <string name="search_placeholder">Search for stories,authors and tags</string>
+    <string name="explore_topics_title">Explore topics</string>
+    <string name="explore_topics">Explore Topic Name</string>
+    <string name="check_story_empty">You need to write something before publishing.</string>
+    <string name="add_Image">Add Image</string>
+</resources>

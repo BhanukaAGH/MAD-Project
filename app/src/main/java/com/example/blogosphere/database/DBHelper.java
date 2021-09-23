@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String SQL_TAGS_CREATE_ENTRIES = "CREATE TABLE " + TAGS_TABLE_NAME + " (" +
                 COLUMN_TAGS_ARTICLE_ID + " INTEGER," +
                 COLUMN_NAME_TAGS_TAG_NAME + " TEXT," +
-                "PRIMARY KEY ("+ COLUMN_TAGS_ARTICLE_ID + "," + COLUMN_NAME_TAGS_TAG_NAME + ") );";
+                "PRIMARY KEY (" + COLUMN_TAGS_ARTICLE_ID + "," + COLUMN_NAME_TAGS_TAG_NAME + ") );";
 
         db.execSQL(SQL_USER_CREATE_ENTRIES);
         db.execSQL(SQL_ARTICLE_CREATE_ENTRIES);
@@ -81,16 +81,19 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /*+++++ User Table Methods +++++*/
+    /*++++++++++++++++++++++++ User Table Methods ++++++++++++++++++++++++*/
     public boolean userRegister(UserModel user) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME_USER_EMAIL, user.getEmail());
         values.put(COLUMN_NAME_USER_PASSWORD, user.getPassword());
         long result = db.insert(USER_TABLE_NAME, null, values);
+
         if (result == -1) {
+            db.close();
             return false;
         } else {
+            db.close();
             return true;
         }
     }
@@ -100,9 +103,12 @@ public class DBHelper extends SQLiteOpenHelper {
         String CHECK_USER_EXISTS = "SELECT * FROM " + USER_TABLE_NAME +
                 " WHERE " + COLUMN_NAME_USER_EMAIL + " = ?";
         Cursor cursor = db.rawQuery(CHECK_USER_EXISTS, new String[]{user.getEmail()});
+
         if (cursor.getCount() > 0) {
+            db.close();
             return true;
         } else {
+            db.close();
             return false;
         }
     }
@@ -113,11 +119,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 " WHERE " + COLUMN_NAME_USER_EMAIL + " = ? and " +
                 COLUMN_NAME_USER_PASSWORD + " = ?";
         Cursor cursor = db.rawQuery(CHECK_USER_CREDENTIALS, new String[]{user.getEmail(), user.getPassword()});
+
         if (cursor.getCount() > 0) {
+            db.close();
             return true;
         } else {
+            db.close();
             return false;
         }
+
     }
 
     public void getLoginUserID(UserModel user) {
@@ -131,9 +141,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 user.setId(cursor.getInt(0));
             } while (cursor.moveToNext());
         }
+        db.close();
     }
 
-    public String getUserNameById(int userID){
+    public String getUserNameById(int userID) {
         String authorName = "";
         SQLiteDatabase db = getWritableDatabase();
         String GET_USER_NAME = "SELECT " + COLUMN_NAME_USER_NAME + " FROM " + USER_TABLE_NAME +
@@ -145,10 +156,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 authorName = cursor.getString(0);
             } while (cursor.moveToNext());
         }
+        db.close();
         return authorName;
     }
 
-    /*+++++ Article Table Methods +++++*/
+    /*++++++++++++++++++++++++ Article Table Methods ++++++++++++++++++++++++*/
     public boolean publishArticle(ArticleModal article) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -164,6 +176,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME_ARTICLE_WRITER_ID, article.getWriter_id());
         values.put(COLUMN_NAME_ARTICLE_WRITE_DATE, article.getDate());
         long result = db.insert(ARTICLE_TABLE_NAME, null, values);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -179,7 +192,6 @@ public class DBHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + ARTICLE_TABLE_NAME;
 
         Cursor cursor = db.rawQuery(query, null);
-
         if (cursor.moveToFirst()) {
             do {
                 // Create new ArticleModel object
@@ -198,41 +210,130 @@ public class DBHelper extends SQLiteOpenHelper {
                 articles.add(article);
             } while (cursor.moveToNext());
         }
+        db.close();
         return articles;
     }
 
     // Get article ID
-    public void getArticleID(ArticleModal article){
+    public void getArticleID(ArticleModal article) {
         SQLiteDatabase db = getWritableDatabase();
         String GET_ARTICLE_ID = "SELECT * FROM " + ARTICLE_TABLE_NAME +
                 " WHERE " + COLUMN_NAME_ARTICLE_TITLE + " = ? and " +
                 COLUMN_NAME_ARTICLE_WRITER_ID + " = ?";
-        Cursor cursor = db.rawQuery(GET_ARTICLE_ID, new String[]{article.getTitle(),Integer.toString(article.getWriter_id())});
+        Cursor cursor = db.rawQuery(GET_ARTICLE_ID, new String[]{article.getTitle(), Integer.toString(article.getWriter_id())});
 
         if (cursor.moveToFirst()) {
             do {
                 article.setId(cursor.getInt(0));
             } while (cursor.moveToNext());
         }
+        db.close();
     }
 
+    // Get artivle by current user
+    public List<ArticleModal> getCurrentUserAllArticles(String userID) {
 
-    /*+++++ Article Tags Table Methods +++++*/
+        List<ArticleModal> articles = new ArrayList();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + ARTICLE_TABLE_NAME + " WHERE " + COLUMN_NAME_ARTICLE_WRITER_ID +
+                " =?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{userID});
+        if (cursor.moveToFirst()) {
+            do {
+                // Create new ArticleModel object
+                ArticleModal article = new ArticleModal();
+                // set methods
+                article.setId(cursor.getInt(0));
+                article.setTitle(cursor.getString(1));
+                byte[] imageBytes = cursor.getBlob(2);
+                Bitmap imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                article.setImage(imageBitmap);
+                article.setContent(cursor.getString(3));
+                article.setWriter_id(cursor.getInt(4));
+                article.setDate(cursor.getString(5));
+
+                //articles [obj,objs,asas,asa]
+                articles.add(article);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return articles;
+    }
+
+    // Get article by article ID
+    public ArticleModal getSingleArticle(String articleID) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(ARTICLE_TABLE_NAME, new String[]{COLUMN_ARTICLE_ID,
+                        COLUMN_NAME_ARTICLE_TITLE, COLUMN_NAME_ARTICLE_IMAGE, COLUMN_NAME_ARTICLE_CONTENT,
+                        COLUMN_NAME_ARTICLE_WRITER_ID, COLUMN_NAME_ARTICLE_WRITE_DATE}, COLUMN_ARTICLE_ID + " = ?", new String[]{articleID}, null,
+                null, null);
+
+        ArticleModal article;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            article = new ArticleModal();
+            article.setId(cursor.getInt(0));
+            article.setTitle(cursor.getString(1));
+            byte[] imageBytes = cursor.getBlob(2);
+            Bitmap imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            article.setImage(imageBitmap);
+            article.setContent(cursor.getString(3));
+            article.setWriter_id(cursor.getInt(4));
+            article.setDate(cursor.getString(5));
+
+            db.close();
+            return article;
+        }
+        db.close();
+        return null;
+    }
+
+    // Edit & Update article
+    public int updateArticle(ArticleModal article){
+        SQLiteDatabase db = getWritableDatabase();
+
+        Bitmap articleImageBitmap = article.getImage();
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        articleImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        imageInBytes = byteArrayOutputStream.toByteArray();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_ARTICLE_TITLE,article.getTitle());
+        contentValues.put(COLUMN_NAME_ARTICLE_IMAGE,imageInBytes);
+        contentValues.put(COLUMN_NAME_ARTICLE_CONTENT, article.getContent());
+        contentValues.put(COLUMN_NAME_ARTICLE_WRITER_ID, article.getWriter_id());
+        contentValues.put(COLUMN_NAME_ARTICLE_WRITE_DATE, article.getDate());
+
+        int status = db.update(ARTICLE_TABLE_NAME,contentValues,COLUMN_ARTICLE_ID +" =?",
+                new String[]{String.valueOf(article.getId())});
+
+        db.close();
+        return status;
+    }
+
+    // Delete One Article
+    public void deleteArticle(int articleID){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(ARTICLE_TABLE_NAME,COLUMN_ARTICLE_ID + " =?",new String[]{Integer.toString(articleID)});
+        db.close();
+    }
+
+    /*++++++++++++++++++++++++ Article Tags Table Methods ++++++++++++++++++++++++*/
     public boolean insertArticleTags(int articleID, String tagName) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_TAGS_ARTICLE_ID, articleID);
         values.put(COLUMN_NAME_TAGS_TAG_NAME, tagName);
         long result = db.insert(TAGS_TABLE_NAME, null, values);
+        db.close();
         if (result == -1) {
             return false;
         } else {
             return true;
         }
     }
-
-
-
 
 
 }

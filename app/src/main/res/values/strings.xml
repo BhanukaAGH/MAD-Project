@@ -27,4 +27,12 @@
     <string name="explore_topics">Explore Topic Name</string>
     <string name="check_story_empty">You need to write something before publishing.</string>
     <string name="add_Image">Add Image</string>
+    <string name="txt_save_article">Save</string>
+
+    // HASITH
+    <string name="header_name">Your Profile</string>
+    <string name="story_publish">Publish Your Story </string>
+    <string name="view_profile">Edit your profile</string>
+    <string name="flowing">0 Following</string>
+    <string name="flowers">0 Followers</string>
 </resources>

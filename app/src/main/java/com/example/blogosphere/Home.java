@@ -2,12 +2,14 @@ package com.example.blogosphere;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,6 +29,8 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class Home extends AppCompatActivity {
 
@@ -103,21 +107,22 @@ public class Home extends AppCompatActivity {
         followingList.setAdapter(adapter);
         followingList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-//        Article List
-        int[] authorImg = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d};
-        String[] author = {"Angelina", "Morgan", "Elina", "Taylor",};
-        String[] desc = {"New! 10x more awesome ways to write JSON configuration using Jsonnet.",
-                "How to Create Dynamic Backgrounds With the CSS Paint API ",
-                "How I landed a full stack developer job without a tech degree or work experience",
-                "A Teenager’s View on Social Media"};
-        int[] articleImg = {R.drawable.aa, R.drawable.ab, R.drawable.ac, R.drawable.ad};
-        String[] date = {"27 Jun", "14 Apr", "10 Aug", "12 Jan"};
-
         articles = myDB.getAllArticles();
 
         CustomAdapter adapterArticle = new CustomAdapter(this,R.layout.single_article_row,articles,myDB);
         articleList = findViewById(R.id.articleList);
         articleList.setAdapter(adapterArticle);
+
+        articleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ArticleModal article = articles.get(position);
+                Intent viewArticleIntent = new Intent(Home.this,ViewBlogPost.class);
+                viewArticleIntent.putExtra("StoryID",Integer.toString(article.getId()));
+                startActivity(viewArticleIntent);
+                overridePendingTransition(0, 0);
+            }
+        });
 
     }
 
@@ -155,6 +160,7 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
         ImageView authorImgView = row.findViewById(R.id.authorImg);
         ImageView articleImgView = row.findViewById(R.id.articleImg);
         TextView dateView = row.findViewById(R.id.txtDate);
+        ImageView bookmarkIcon = row.findViewById(R.id.bookmarkVector);
 
         ArticleModal article = articles.get(position);
 
@@ -163,6 +169,14 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
         authorImgView.setImageBitmap(article.getImage());
         articleImgView.setImageBitmap(article.getImage());
         dateView.setText(article.getDate());
+
+        bookmarkIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toasty.normal(context,"Bookmark Icon Clicked" + position).show();
+//                bookmarkIcon.setImageResource(R.drawable.ic_baseline_bookmark_24);
+            }
+        });
 
         return row;
     }

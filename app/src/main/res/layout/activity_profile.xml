@@ -24,7 +24,7 @@
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="56dp"
-        android:background="#80000000" />
+        android:background="#4D252626" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,17 +46,18 @@
             >
 
             <TextView
+                android:id="@+id/heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/heading"
                 android:background="@color/white"
+                android:fontFamily="@font/cabin_semibold"
                 android:gravity="center_horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="@string/header_name"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="24sp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"/>
+                android:textSize="24sp" />
             <View
                 android:id="@+id/divider2"
                 android:layout_width="match_parent"
@@ -203,11 +204,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edit"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/black"
                 android:text="@string/story_publish"
-                app:cornerRadius="15sp"
-                android:layout_centerHorizontal="true"/>
+                app:cornerRadius="15sp" />
 
 
 

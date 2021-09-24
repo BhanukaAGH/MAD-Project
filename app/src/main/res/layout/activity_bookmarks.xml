@@ -16,6 +16,16 @@
         app:itemTextColor="@drawable/selector"
         app:menu="@menu/menu_navigation" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="56dp"
+        android:background="#4D252626" />
+
 </RelativeLayout>
 
 

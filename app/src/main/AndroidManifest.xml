@@ -12,18 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Blogosphere">
         <activity
+            android:name=".ViewBlogPost"
+            android:exported="true" />
+        <activity
             android:name=".Edit_Article"
             android:exported="true" />
         <activity
             android:name=".SearchActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Create_Article"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Register_Activity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Login_Activity"
             android:exported="true">
@@ -35,16 +38,16 @@
         </activity>
         <activity
             android:name=".Profile"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Write_Story"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Bookmarks"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Home"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -10,11 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -106,7 +104,10 @@ public class Profile extends AppCompatActivity {
                         .setNeutralButton("VIEW", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Intent viewArticleIntent = new Intent(Profile.this,ViewBlogPost.class);
+                                viewArticleIntent.putExtra("StoryID",Integer.toString(article.getId()));
+                                startActivity(viewArticleIntent);
+                                overridePendingTransition(0, 0);
                             }
                         })
                         .setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
@@ -161,12 +162,14 @@ class UserAdapter extends ArrayAdapter<ArticleModal> {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View row = layoutInflater.inflate(resource, parent, false);
 
-        ImageView imageView = row.findViewById(R.id.imguser);
+        ImageView imageView = row.findViewById(R.id.authorImage);
+        ImageView articleImageView = row.findViewById(R.id.articleImage);
         TextView textname = row.findViewById(R.id.username);
         TextView post = row.findViewById(R.id.post);
 
         ArticleModal article = articles.get(position);
         imageView.setImageBitmap(article.getImage());
+        articleImageView.setImageBitmap(article.getImage());
 //        textname.setText(myDB.getUserNameById(article.getWriter_id()));
         textname.setText("Mark Dale");
         post.setText(article.getTitle());

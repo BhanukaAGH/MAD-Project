@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 2;
+    private static final int VERSION = 4;
     private static final String DATABASE_NAME = "Blogosphere";
     private static final String USER_TABLE_NAME = "users";
     private static final String ARTICLE_TABLE_NAME = "articles";
     private static final String TAGS_TABLE_NAME = "tags";
+    private static final String LIST_TABLE_NAME = "List";
 
     // User table column names
     private static final String COLUMN_USER_ID = "id";
@@ -37,6 +38,14 @@ public class DBHelper extends SQLiteOpenHelper {
     // Tag table column name
     private static final String COLUMN_TAGS_ARTICLE_ID = "id";
     private static final String COLUMN_NAME_TAGS_TAG_NAME = "tag_name";
+
+    // List table column name
+    private static final String COLUMN_NAME_LIST_ID = "List_ID";
+    private static final String COLUMN_NAME_LIST_USER_ID = "user_ID";
+    private static final String COLUMN_NAME_LIST_Topic = "List_Topic";
+    private static final String COLUMN_NAME_LIST_DESCRIPTION = "Description";
+    private static final String COLUMN_NAME_LIST_CREATED_DATE = "Date";
+    private static final String COLUMN_NAME_LIST_STORY_COUNT = "Story_Count";
 
 
     private ByteArrayOutputStream byteArrayOutputStream;
@@ -68,9 +77,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_NAME_TAGS_TAG_NAME + " TEXT," +
                 "PRIMARY KEY (" + COLUMN_TAGS_ARTICLE_ID + "," + COLUMN_NAME_TAGS_TAG_NAME + ") );";
 
+        String LIST_TABLE_CREATE_QUERY = "CREATE TABLE " + LIST_TABLE_NAME + " " + "("
+                + COLUMN_NAME_LIST_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                + COLUMN_NAME_LIST_USER_ID + " INTEGER ,"
+                + COLUMN_NAME_LIST_Topic + " TEXT ,"
+                + COLUMN_NAME_LIST_DESCRIPTION + " TEXT ,"
+                + COLUMN_NAME_LIST_CREATED_DATE + " TEXT ,"
+                + COLUMN_NAME_LIST_STORY_COUNT + " INTEGER );";
+
         db.execSQL(SQL_USER_CREATE_ENTRIES);
         db.execSQL(SQL_ARTICLE_CREATE_ENTRIES);
         db.execSQL(SQL_TAGS_CREATE_ENTRIES);
+        db.execSQL(LIST_TABLE_CREATE_QUERY);
     }
 
     @Override
@@ -78,6 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ARTICLE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TAGS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LIST_TABLE_NAME);
         onCreate(db);
     }
 
@@ -291,7 +310,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // Edit & Update article
-    public int updateArticle(ArticleModal article){
+    public int updateArticle(ArticleModal article) {
         SQLiteDatabase db = getWritableDatabase();
 
         Bitmap articleImageBitmap = article.getImage();
@@ -300,13 +319,13 @@ public class DBHelper extends SQLiteOpenHelper {
         imageInBytes = byteArrayOutputStream.toByteArray();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_ARTICLE_TITLE,article.getTitle());
-        contentValues.put(COLUMN_NAME_ARTICLE_IMAGE,imageInBytes);
+        contentValues.put(COLUMN_NAME_ARTICLE_TITLE, article.getTitle());
+        contentValues.put(COLUMN_NAME_ARTICLE_IMAGE, imageInBytes);
         contentValues.put(COLUMN_NAME_ARTICLE_CONTENT, article.getContent());
         contentValues.put(COLUMN_NAME_ARTICLE_WRITER_ID, article.getWriter_id());
         contentValues.put(COLUMN_NAME_ARTICLE_WRITE_DATE, article.getDate());
 
-        int status = db.update(ARTICLE_TABLE_NAME,contentValues,COLUMN_ARTICLE_ID +" =?",
+        int status = db.update(ARTICLE_TABLE_NAME, contentValues, COLUMN_ARTICLE_ID + " =?",
                 new String[]{String.valueOf(article.getId())});
 
         db.close();
@@ -314,9 +333,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // Delete One Article
-    public void deleteArticle(int articleID){
+    public void deleteArticle(int articleID) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(ARTICLE_TABLE_NAME,COLUMN_ARTICLE_ID + " =?",new String[]{Integer.toString(articleID)});
+        db.delete(ARTICLE_TABLE_NAME, COLUMN_ARTICLE_ID + " =?", new String[]{Integer.toString(articleID)});
         db.close();
     }
 
@@ -335,5 +354,89 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Gihan Queries
+    /*++++++++++++++++++++++++ Article Tags Table Methods ++++++++++++++++++++++++*/
+    public void addToTheList(ListModal listModel) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_NAME_LIST_USER_ID, listModel.getUser_ID());
+        contentValues.put(COLUMN_NAME_LIST_Topic, listModel.getList_Topic());
+        contentValues.put(COLUMN_NAME_LIST_DESCRIPTION, listModel.getList_Description());
+        contentValues.put(COLUMN_NAME_LIST_CREATED_DATE, listModel.getCreated_date());
+        contentValues.put(COLUMN_NAME_LIST_STORY_COUNT, listModel.getStory_Count());
+        db.insert(LIST_TABLE_NAME, null, contentValues);
+
+        db.close();
+    }
+
+    //get alll the created lists.
+    public List<ListModal> getAllLists() {
+        List<ListModal> listmodel = new ArrayList();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = " SELECT * FROM " + LIST_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                ListModal listmodel_obj = new ListModal();
+                listmodel_obj.setList_ID(cursor.getInt(0));
+                listmodel_obj.setUser_ID(cursor.getInt(1));
+                listmodel_obj.setList_Topic(cursor.getString(2));
+                listmodel_obj.setList_Description(cursor.getString(3));
+                listmodel_obj.setCreated_date(cursor.getString(4));
+                listmodel_obj.setStory_Count(cursor.getInt(5));
+                listmodel.add(listmodel_obj);
+            } while (cursor.moveToNext());
+        }
+        return listmodel;
+    }
+
+
+    //for deleting an item
+    public void deleteList(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(LIST_TABLE_NAME, " List_ID =? ", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    //get single List
+    public ListModal getSingleList(int list_id) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor cursor = db.query(LIST_TABLE_NAME, new String[]{COLUMN_NAME_LIST_ID, COLUMN_NAME_LIST_USER_ID, COLUMN_NAME_LIST_Topic, COLUMN_NAME_LIST_DESCRIPTION},
+                COLUMN_NAME_LIST_ID + " = ?", new String[]{String.valueOf(list_id)}, null, null, null);
+
+        ListModal listModeledit;
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            listModeledit = new ListModal(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getString(2),
+                    cursor.getString(3)
+            );
+            return listModeledit;
+
+        }
+        return null;
+    }
+
+    //update List topic
+    public int updateSingleList(ListModal listModel) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_NAME_LIST_USER_ID, listModel.getUser_ID());
+        contentValues.put(COLUMN_NAME_LIST_Topic, listModel.getList_Topic());
+        contentValues.put(COLUMN_NAME_LIST_DESCRIPTION, listModel.getList_Description());
+
+        int status = db.update(LIST_TABLE_NAME, contentValues, COLUMN_NAME_LIST_ID + " =?",
+                new String[]{String.valueOf(listModel.getList_ID())});
+        db.close();
+        return status;
+    }
 
 }

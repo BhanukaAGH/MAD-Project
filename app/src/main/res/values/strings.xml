@@ -36,4 +36,52 @@
     <string name="view_profile">Edit your profile</string>
     <string name="flowing">0 Following</string>
     <string name="flowers">0 Followers</string>
+
+
+    // GIHAN
+    <string name="tv_top1">Reading List</string>
+    <string name="tv_top2">"Create a list to easily collect stories "</string>
+    <string name="btn_startnow">Start Now</string>
+    <string name="tv_countstories1">6 stories</string>
+    <string name="tv_date1">date</string>
+    <!-- viewdwd list -->
+    <string name="tv_top6">Buy these products in future</string>
+    <string name="tv_topstorycount">6 Stories</string>
+    <string name="tv_topdate1">2020/08/12</string>
+    <string name="btn_deletelist">Delete list</string>
+    <string name="btn_editlist">Edit List</string>
+    <string name="btn_sharelist">Share List</string>
+    <string name="tv_author1">Author</string>
+    <string name="tv_date2">date</string>
+    <string name="tv_storytopic1">story topic</string>
+    <!-- update list -->
+    <string name="tv_top3">Edit List</string>
+    <string name="tv_editlistTop1">Edit text here</string>
+    <string name="btn_editListUpdate">Update</string>
+    <string name="chec_SelectedStories">Story</string>
+    <string name="tv_author3">Author</string>
+    <string name="tv_date3">date</string>
+    <string name="tv_storytopic3">Story Topic</string>
+    <!-- create list-->
+    <string name="tv_top5">Create LIst</string>
+    <string name="tv_EnterTopic">Enter Topic</string>
+    <string name="tv_EnterDiscription">Enter Description</string>
+    <string name="btn_create">Create List</string>
+    <string name="tv_selectListToAdd">Select a List to add</string>
+    <string name="checkBox1">Reading List</string>
+    <string name="checkBox2">Buy these products in future</string>
+    <string name="checkBox3">Story Time</string>
+    <string name="checkBox4">Recipies</string>
+    <string name="checkBox5">My favourites</string>
+    <string name="btnReset">Reset</string>
+    <string name="btnSubmit">Submit</string>
+    <string name="tv_top7">save your favourites to read later</string>
+    <string name="tv_editTopicLable">Enter new Topic</string>
+    <string name="tv_editdiscriptionLable">Enter new description</string>
+    <string name="test">hello</string>
+    <string name="editText_EnterTopic">Enter topic here</string>
+    <string name="editText_EnterDescription">Enter Description Here</string>
+    <string name="et_EditTextHere">Edit text here</string>
+    <string name="btn_bookmark01">mookmark 1</string>
+
 </resources>

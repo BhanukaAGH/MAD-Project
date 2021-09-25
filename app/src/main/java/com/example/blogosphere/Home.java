@@ -1,6 +1,7 @@
 package com.example.blogosphere;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.example.blogosphere.database.ArticleModal;
 import com.example.blogosphere.database.DBHelper;
 import com.example.blogosphere.database.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
@@ -176,7 +178,42 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
             @Override
             public void onClick(View v) {
                 Toasty.normal(context,"Bookmark Icon Clicked" + position).show();
-//                bookmarkIcon.setImageResource(R.drawable.ic_baseline_bookmark_24);
+
+
+                String singleItems[] = new String[4];
+                singleItems[0] = "Item 1";
+                singleItems[1] = "Item 2";
+                singleItems[2] = "Item 3";
+                singleItems[3] = "Item 4";
+                int checkedItem = 1;
+
+                new MaterialAlertDialogBuilder(context)
+                        .setTitle("Bookmark List")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
+                            }
+                        })
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                bookmarkIcon.setImageResource(R.drawable.ic_baseline_bookmark_24);
+                            }
+                        })
+                        .setNeutralButton("Remove", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
+                            }
+                        })
+                        .setSingleChoiceItems(singleItems, checkedItem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
             }
         });
 

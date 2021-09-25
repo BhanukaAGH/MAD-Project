@@ -1,16 +1,40 @@
 package com.example.blogosphere;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.blogosphere.database.DBHelper;
+import com.example.blogosphere.database.ListModal;
 import com.example.blogosphere.database.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bookmarks extends AppCompatActivity {
+
+    private Button start_now ;
+    private ListView rowreadinglistView;
+    private List<ListModal> listmodel ;
+    Context context ;
+    private DBHelper myDB;
+
 
     UserModel user;
 
@@ -61,5 +85,113 @@ public class Bookmarks extends AppCompatActivity {
             }
         });
 
+
+
+        // Gihan Line
+        context = this;
+
+        rowreadinglistView = findViewById(R.id.listview_home);
+        start_now = findViewById(R.id.btn_startnow);
+        myDB = new DBHelper(context);
+        listmodel = new ArrayList<>();
+        listmodel = myDB.getAllLists();
+
+        CustomAdapter_List_HomePage adapter = new CustomAdapter_List_HomePage(context,R.layout.rowreadinglists,listmodel);
+        rowreadinglistView.setAdapter(adapter);
+
+        start_now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),CreateNewList.class);
+                i.putExtra("UserObject", user);
+                Toast.makeText(getApplicationContext(), "create new list has pressed", Toast.LENGTH_SHORT).show();
+                startActivity(i);
+            }
+        });
+
+        rowreadinglistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ListModal listmodels = listmodel.get(i);
+                String list_id = String.valueOf(listmodels.getList_ID());
+                String list_topic = listmodels.getList_Topic();
+                Intent newI = new Intent(context,NewViewedList.class);
+                newI.putExtra("listID",list_id);
+                newI.putExtra("listTOPIC",list_topic);
+
+            }
+        });
+
+        rowreadinglistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                ListModal listmodelsLongClick = listmodel.get(i);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(listmodelsLongClick.getList_Topic());
+                builder.setMessage(listmodelsLongClick.getList_Description());
+
+                builder.setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        myDB.deleteList(listmodelsLongClick.getList_ID());
+                        Intent bookmarkI = new Intent(context,Bookmarks.class);
+                        bookmarkI.putExtra("UserObject", user);
+                        startActivity(bookmarkI);
+                    }
+                });
+
+                builder.setNegativeButton("update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(context,NewEditList.class);
+                        intent.putExtra("UserObject", user);
+                        intent.putExtra("LIST_ID",String.valueOf(listmodelsLongClick.getList_ID()));
+                        startActivity(intent);
+                    }
+                });
+                builder.show();
+
+                return false;
+            }
+        });
+
+    }
+}
+
+
+class CustomAdapter_List_HomePage extends ArrayAdapter<ListModal> {
+
+    private Context context;
+    private int resource ;
+    List<ListModal> listmodel ;
+
+    public CustomAdapter_List_HomePage(@NonNull Context context, int resource, List<ListModal> listmodel) {
+        super(context, resource,listmodel);
+        this.context = context;
+        this.resource = resource ;
+        this.listmodel = listmodel ;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position,View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View row = inflater.inflate(resource,parent,false);
+
+        TextView listTopicView = row.findViewById(R.id.tv_listtitle1);
+        TextView listDiscriptionView = row.findViewById(R.id.tv_listdiscription);
+        TextView storyCountView = row.findViewById(R.id.tv_countstories1);
+        TextView publishDateView = row.findViewById(R.id.tv_date1);
+
+        //arraylist01 [ob1,ob2,ob3]
+        ListModal Lmodels = listmodel.get(position);
+        listTopicView.setText(Lmodels.getList_Topic());
+        listDiscriptionView.setText(Lmodels.getList_Description());
+        storyCountView.setText(Integer.toString(Lmodels.getStory_Count()));
+        publishDateView.setText(Lmodels.getCreated_date());
+
+        return row;
     }
 }

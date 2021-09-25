@@ -12,8 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Blogosphere">
         <activity
+            android:name=".NewEditList"
+            android:exported="true" />
+        <activity
+            android:name=".NewViewedList"
+            android:exported="true" />
+        <activity
+            android:name=".CreateNewList"
+            android:exported="true" />
+        <activity
             android:name=".FirstView"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +47,7 @@
             android:exported="true" />
         <activity
             android:name=".Login_Activity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".Profile"
             android:exported="true" />

@@ -128,7 +128,9 @@ public class Home extends AppCompatActivity {
 
     //    Search Article
     public void searchArticle(View view) {
-        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+        Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
+        searchIntent.putExtra("UserObject",user);
+        startActivity(searchIntent);
         overridePendingTransition(0, 0);
     }
 }

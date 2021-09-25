@@ -69,8 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:visibility="visible"
-            tools:srcCompat="@drawable/ic_outline_favorite_border_24"
-            android:contentDescription="TODO" />
+            app:srcCompat="@drawable/ic_outline_favorite_border_24" />
 
         <TextView
             android:id="@+id/textView15"
@@ -84,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:srcCompat="@drawable/ic_outline_comment_24" />
+            app:srcCompat="@drawable/ic_outline_comment_24" />
 
         <TextView
             android:id="@+id/tv_CommnetCount"
@@ -98,14 +97,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            tools:srcCompat="@drawable/ic_outline_share_24" />
+            app:srcCompat="@drawable/ic_outline_share_24" />
 
         <ImageView
             android:id="@+id/listImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            tools:srcCompat="@drawable/ic_outline_playlist_add_24" />
+            app:srcCompat="@drawable/ic_outline_playlist_add_24" />
     </LinearLayout>
 
     <WebView

@@ -13,12 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
     private static final String DATABASE_NAME = "Blogosphere";
     private static final String USER_TABLE_NAME = "users";
     private static final String ARTICLE_TABLE_NAME = "articles";
     private static final String TAGS_TABLE_NAME = "tags";
     private static final String LIST_TABLE_NAME = "List";
+    private static final String COMMENT_TABLE_NAME = "comments";
 
     // User table column names
     private static final String COLUMN_USER_ID = "id";
@@ -46,6 +47,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_LIST_DESCRIPTION = "Description";
     private static final String COLUMN_NAME_LIST_CREATED_DATE = "Date";
     private static final String COLUMN_NAME_LIST_STORY_COUNT = "Story_Count";
+
+    // Comment table column name
+    private static final String COLUMN_NAME_COMMENT_ID = "com_id";
+    private static final String COLUMN_NAME_COMMENT_USER_ID = "user_id";
+    private static final String COLUMN_NAME_COMMENT_BLOG_ID = "blog_id";
+    private static final String COLUMN_NAME_COMMENT_COMMENT = "comment";
+    private static final String COLUMN_NAME_COMMENT_DATE = "date";
 
 
     private ByteArrayOutputStream byteArrayOutputStream;
@@ -85,10 +93,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 + COLUMN_NAME_LIST_CREATED_DATE + " TEXT ,"
                 + COLUMN_NAME_LIST_STORY_COUNT + " INTEGER );";
 
+        String COMMENT_TABLE_CREATE_QUERY = "CREATE TABLE " + COMMENT_TABLE_NAME + " " +
+                "("
+                + COLUMN_NAME_COMMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_NAME_COMMENT_USER_ID + " INTEGER,"
+                + COLUMN_NAME_COMMENT_BLOG_ID + " INTEGER,"
+                + COLUMN_NAME_COMMENT_COMMENT + " TEXT,"
+                + COLUMN_NAME_COMMENT_DATE + " TEXT" +
+                ");";
+
         db.execSQL(SQL_USER_CREATE_ENTRIES);
         db.execSQL(SQL_ARTICLE_CREATE_ENTRIES);
         db.execSQL(SQL_TAGS_CREATE_ENTRIES);
         db.execSQL(LIST_TABLE_CREATE_QUERY);
+        db.execSQL(COMMENT_TABLE_CREATE_QUERY);
     }
 
     @Override
@@ -97,6 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ARTICLE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TAGS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + LIST_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + COMMENT_TABLE_NAME);
         onCreate(db);
     }
 
@@ -355,7 +374,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // Gihan Queries
-    /*++++++++++++++++++++++++ Article Tags Table Methods ++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++ Bookmark Table Methods ++++++++++++++++++++++++*/
     public void addToTheList(ListModal listModel) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -435,6 +454,87 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int status = db.update(LIST_TABLE_NAME, contentValues, COLUMN_NAME_LIST_ID + " =?",
                 new String[]{String.valueOf(listModel.getList_ID())});
+        db.close();
+        return status;
+    }
+
+
+    // Buddheesha Queries
+    /*++++++++++++++++++++++++ Comment Table Methods ++++++++++++++++++++++++*/
+    //add a comment
+    public void addComment(CommentModal comment) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_COMMENT_USER_ID, comment.getUserId());
+        contentValues.put(COLUMN_NAME_COMMENT_BLOG_ID, comment.getBlogId());
+        contentValues.put(COLUMN_NAME_COMMENT_COMMENT, comment.getComment());
+        contentValues.put(COLUMN_NAME_COMMENT_DATE, comment.getDate());
+        sqLiteDatabase.insert(COMMENT_TABLE_NAME, null, contentValues);
+        sqLiteDatabase.close();
+    }
+
+    // count comments table records
+    public int countComments() {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + COMMENT_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor.getCount();
+    }
+
+    //get All comments into a list
+    public List<CommentModal> getALLComments() {
+        List<CommentModal> comments = new ArrayList();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + COMMENT_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                CommentModal comment = new CommentModal();
+                comment.setComId(cursor.getInt(0));
+                comment.setUserId(cursor.getInt(1));
+                comment.setBlogId(cursor.getInt(2));
+                comment.setComment(cursor.getString(3));
+                comment.setDate(cursor.getLong(4));
+                comments.add(comment);
+            } while (cursor.moveToNext());
+        }
+        return comments;
+    }
+
+    //Delete Comment
+    public void deleteComment(int ComId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(COMMENT_TABLE_NAME, COLUMN_NAME_COMMENT_ID + "=?", new String[]{String.valueOf(ComId)});
+    }
+
+    //Get a single comment
+    public CommentModal getSingleComment(int ComId) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(COMMENT_TABLE_NAME, new String[]{COLUMN_NAME_COMMENT_ID, COLUMN_NAME_COMMENT_USER_ID, COLUMN_NAME_COMMENT_BLOG_ID, COLUMN_NAME_COMMENT_COMMENT, COLUMN_NAME_COMMENT_DATE}, COLUMN_NAME_COMMENT_ID + "= ?", new String[]{String.valueOf(ComId)}, null, null, null);
+        CommentModal comment;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            comment = new CommentModal(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getInt(2),
+                    cursor.getString(3),
+                    cursor.getLong(4)
+            );
+            return comment;
+        }
+        return null;
+    }
+
+    //Update a comment
+    public int updateComment(CommentModal comment) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_COMMENT_USER_ID, comment.getUserId());
+        contentValues.put(COLUMN_NAME_COMMENT_BLOG_ID, comment.getBlogId());
+        contentValues.put(COLUMN_NAME_COMMENT_COMMENT, comment.getComment());
+        contentValues.put(COLUMN_NAME_COMMENT_DATE, comment.getDate());
+        int status = db.update(COMMENT_TABLE_NAME, contentValues, COLUMN_NAME_COMMENT_ID + " =?", new String[]{String.valueOf(comment.getComId())});
         db.close();
         return status;
     }

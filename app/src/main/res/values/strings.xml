@@ -84,4 +84,8 @@
     <string name="et_EditTextHere">Edit text here</string>
     <string name="btn_bookmark01">mookmark 1</string>
 
+    // BUDDHEESHA
+    <string name="response_title">Responses</string>
+    <string name="update_comment_btn">Update</string>
+    <string name="addBtn">add</string>
 </resources>

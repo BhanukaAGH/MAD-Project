@@ -1,13 +1,13 @@
 package com.example.blogosphere;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.blogosphere.database.ArticleModal;
 import com.example.blogosphere.database.DBHelper;
@@ -19,6 +19,7 @@ public class ViewBlogPost extends AppCompatActivity {
     private TextView authorView;
     private TextView dateView;
     private TextView articleTitleView;
+    private TextView commentCountView;
     private WebView contentView;
     private ImageView commentView;
     private ImageView favoriteView;
@@ -28,16 +29,23 @@ public class ViewBlogPost extends AppCompatActivity {
     ArticleModal article;
     UserModel user;
     DBHelper myDB;
+    String articleID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_blog_post);
 
+        // Get login user object
+        if (user == null) {
+            Intent i = getIntent();
+            user = (UserModel) i.getSerializableExtra("UserObject");
+        }
+
         myDB = new DBHelper(this);
 
         Intent i = getIntent();
-        String articleID = i.getStringExtra("StoryID");
+        articleID = i.getStringExtra("StoryID");
         article = myDB.getSingleArticle(articleID);
 
         authorImage = findViewById(R.id.authorImage);
@@ -49,11 +57,27 @@ public class ViewBlogPost extends AppCompatActivity {
         favoriteView = findViewById(R.id.favoriteImage);
         shareView = findViewById(R.id.shareImage);
         addListView = findViewById(R.id.listImage);
+        commentCountView = findViewById(R.id.tv_CommnetCount);
 
         // set article values
         contentView.loadDataWithBaseURL(null, article.getContent(), "text/html", "utf-8", null);
         articleTitleView.setText(article.getTitle());
         dateView.setText(article.getDate());
+
+        int CommentCount = myDB.countComments();
+        commentCountView.setText(Integer.toString(CommentCount));
+
+        commentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent viewCommentIntent = new Intent(ViewBlogPost.this, ViewComment.class);
+                viewCommentIntent.putExtra("UserObject", user);
+                viewCommentIntent.putExtra("StoryID", articleID);
+                startActivity(viewCommentIntent);
+            }
+        });
+
+
 
     }
 }

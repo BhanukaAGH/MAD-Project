@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blogosphere.database.ArticleModal;
 import com.example.blogosphere.database.DBHelper;
+import com.example.blogosphere.database.ListModal;
 import com.example.blogosphere.database.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -143,6 +144,7 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
     private Context context;
     private int resource;
     List<ArticleModal> articles;
+    List<ListModal> bookmarkList;
     DBHelper myDB;
 
     CustomAdapter(Context context,int resource, List<ArticleModal> articles,DBHelper myDB ) {
@@ -179,12 +181,14 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
             public void onClick(View v) {
                 Toasty.normal(context,"Bookmark Icon Clicked" + position).show();
 
+                bookmarkList = myDB.getAllLists();
+                String []singleItem = new String[bookmarkList.size()];
 
-                String singleItems[] = new String[4];
-                singleItems[0] = "Item 1";
-                singleItems[1] = "Item 2";
-                singleItems[2] = "Item 3";
-                singleItems[3] = "Item 4";
+                int i = 0;
+                for(ListModal s: bookmarkList){
+                    singleItem[i] = s.getList_Topic();
+                    i++;
+                }
                 int checkedItem = 1;
 
                 new MaterialAlertDialogBuilder(context)
@@ -207,10 +211,10 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
                                 bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
                             }
                         })
-                        .setSingleChoiceItems(singleItems, checkedItem, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(singleItem, checkedItem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                System.out.println(singleItem[which]);
                             }
                         })
                         .show();

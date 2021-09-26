@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 5;
+    private static final int VERSION = 8;
     private static final String DATABASE_NAME = "Blogosphere";
     private static final String USER_TABLE_NAME = "users";
     private static final String ARTICLE_TABLE_NAME = "articles";
@@ -26,6 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_USER_NAME = "name";
     private static final String COLUMN_NAME_USER_EMAIL = "email";
     private static final String COLUMN_NAME_USER_PASSWORD = "password";
+    private static final String COLUMN_NAME_USER_IMAGE = "image";
     private static final String COLUMN_NAME_USER_ABOUT = "about";
 
     // Article table column names
@@ -70,6 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_NAME_USER_NAME + " TEXT," +
                 COLUMN_NAME_USER_EMAIL + " TEXT," +
                 COLUMN_NAME_USER_PASSWORD + " TEXT," +
+                COLUMN_NAME_USER_IMAGE + " BLOB," +
                 COLUMN_NAME_USER_ABOUT + " TEXT);";
 
         String SQL_ARTICLE_CREATE_ENTRIES = "CREATE TABLE " + ARTICLE_TABLE_NAME + " (" +
@@ -478,6 +480,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT * FROM " + COMMENT_TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
+        db.close();
         return cursor.getCount();
     }
 
@@ -498,6 +501,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 comments.add(comment);
             } while (cursor.moveToNext());
         }
+        db.close();
         return comments;
     }
 
@@ -505,6 +509,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteComment(int ComId) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(COMMENT_TABLE_NAME, COLUMN_NAME_COMMENT_ID + "=?", new String[]{String.valueOf(ComId)});
+        db.close();
     }
 
     //Get a single comment
@@ -521,8 +526,10 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getString(3),
                     cursor.getLong(4)
             );
+            db.close();
             return comment;
         }
+        db.close();
         return null;
     }
 
@@ -537,6 +544,59 @@ public class DBHelper extends SQLiteOpenHelper {
         int status = db.update(COMMENT_TABLE_NAME, contentValues, COLUMN_NAME_COMMENT_ID + " =?", new String[]{String.valueOf(comment.getComId())});
         db.close();
         return status;
+    }
+
+
+    // Hasith Queries
+    /*++++++++++++++++++++++++ User Table Methods ++++++++++++++++++++++++*/
+    public UserModel getonerecord(int id){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = " SELECT * FROM " + USER_TABLE_NAME+ " WHERE " +  COLUMN_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query ,new String[]{Integer.toString(id)});
+        UserModel uermodel = new UserModel();
+
+        if(cursor.moveToFirst()){
+            uermodel.setName(cursor.getString(1));
+            uermodel.setEmail(cursor.getString(2));
+            uermodel.setAbout(cursor.getString(5));
+            byte[] imagebytes= cursor.getBlob(4);
+            Bitmap objectbitmap = BitmapFactory.decodeByteArray(imagebytes,0,imagebytes.length);
+            uermodel.setImage(objectbitmap);
+        }
+        db.close();
+        return  uermodel;
+    }
+    public int Upatesave(UserModel model){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_USER_NAME, model.getName());
+        contentValues.put(COLUMN_NAME_USER_EMAIL, model.getEmail());
+        contentValues.put(COLUMN_NAME_USER_ABOUT, model.getAbout());
+
+        int stauts = db.update(USER_TABLE_NAME,contentValues, COLUMN_USER_ID +" =?",new String[]{String.valueOf(model.getId())} );
+        db.close();
+        return stauts;
+    }
+
+    public int imageinsert(UserModel modelobject){
+        SQLiteDatabase db = getWritableDatabase();
+        Bitmap imagetostore = modelobject.getImage();
+        byteArrayOutputStream= new ByteArrayOutputStream();
+        imagetostore.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        imageInBytes = byteArrayOutputStream.toByteArray();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_USER_NAME, modelobject.getName());
+        contentValues.put(COLUMN_NAME_USER_IMAGE, imageInBytes);
+        contentValues.put(COLUMN_NAME_USER_ABOUT, modelobject.getAbout());
+        int stauts = db.update(USER_TABLE_NAME,contentValues, COLUMN_USER_ID +" =?",new String[]{String.valueOf(modelobject.getId())} );
+        db.close();
+        return stauts;
+    }
+    public int deleteaccount(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        int result= db.delete(USER_TABLE_NAME,COLUMN_USER_ID + " =?",new String[]{String.valueOf(id)});
+        db.close();
+        return  result;
     }
 
 }

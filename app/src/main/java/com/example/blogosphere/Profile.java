@@ -29,6 +29,7 @@ import java.util.List;
 public class Profile extends AppCompatActivity {
 
     ListView view;
+    TextView editbtnView;
     DBHelper myDB;
     UserModel user;
     ArticleModal article;
@@ -87,6 +88,19 @@ public class Profile extends AppCompatActivity {
 
 //        Hasith Code
         view = (ListView) findViewById(R.id.listviewpost);
+        editbtnView = findViewById(R.id.edit);
+
+        editbtnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editIntent = new Intent(Profile.this,Edit_section.class);
+                editIntent.putExtra("UserObject", user);
+                startActivity(editIntent);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+
 
         articles = myDB.getCurrentUserAllArticles(Integer.toString(user.getId()));
         UserAdapter apuser = new UserAdapter(this, R.layout.raw, articles, myDB);

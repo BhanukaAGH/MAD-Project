@@ -1,13 +1,26 @@
 package com.example.blogosphere.database;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class UserModel implements Serializable {
 
     private int id;
     private String name, email,password, about;
+    private Bitmap image;
 
     public UserModel(){}
+
+    public UserModel(int id, Bitmap image){
+        this.id = id;
+        this.image = image;
+    }
+
+    public UserModel(String name, String email){
+        this.name = name;
+        this.email = email;
+    }
 
     public UserModel(int id, String name, String email, String about) {
         this.id = id;
@@ -54,5 +67,13 @@ public class UserModel implements Serializable {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 }

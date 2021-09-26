@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Blogosphere">
         <activity
+            android:name=".UpdateUser"
+            android:exported="true" />
+        <activity
+            android:name=".Edit_section"
+            android:exported="true" />
+        <activity
             android:name=".AddComment"
             android:exported="true" />
         <activity

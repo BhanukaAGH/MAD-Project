@@ -32,10 +32,31 @@
 
     // HASITH
     <string name="header_name">Your Profile</string>
-    <string name="story_publish">Publish Your Story </string>
+    <string name="user_name">Aaron Caleb</string>
     <string name="view_profile">Edit your profile</string>
     <string name="flowing">0 Following</string>
     <string name="flowers">0 Followers</string>
+    <string name="list">List</string>
+    <string name="post">Write Your First Story</string>
+    <string name="textinfo">We d love to hear what you are thinking.</string>
+    <string name="btn1_text">Publish Your Story</string>
+    <string name="heading2">Edit Your Profile</string>
+    <string name="choose_image">Choose an image</string>
+    <string name="form_name">Name</string>
+    <string name="form_email">Email</string>
+    <string name="about_you">About You</string>
+    <string name="hint_name">Your Name</string>
+    <string name="hint_email">Your Email</string>
+    <string name="hint_about">Enter a short bio </string>
+    <string name="btn_update">Update </string>
+    <string name="btn_delete">Delete </string>
+    <string name="btn_save">Save </string>
+    <string name="story_publish">Publish Your Story </string>
+    <string name="title_activity_linaer">linaer</string>
+    <string name="other_user">Aaron Caleb</string>
+    <string name="user_bio">Once you have a great professional biography, you can put it on your
+        website, social media accounts, or even a future book jacket.</string>
+    <string name="btn_userfollow">Follow</string>
 
 
     // GIHAN
@@ -88,4 +109,5 @@
     <string name="response_title">Responses</string>
     <string name="update_comment_btn">Update</string>
     <string name="addBtn">add</string>
+
 </resources>

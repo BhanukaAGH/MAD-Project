@@ -45,6 +45,7 @@ public class CreateNewList extends AppCompatActivity {
             user = (UserModel) i.getSerializableExtra("UserObject");
         }
 
+        //on button click
         btn_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

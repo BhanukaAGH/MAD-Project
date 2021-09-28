@@ -30,6 +30,8 @@ public class Register_Activity extends AppCompatActivity {
     Button registerBtn;
     DBHelper myDB;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +65,10 @@ public class Register_Activity extends AppCompatActivity {
                 } else {
                     boolean registerSuccess = myDB.userRegister(user);
                     if (registerSuccess) {
+                        userID = myDB.getLoginUserID(email);
                         Toasty.success(getApplicationContext(), "Registration Successful.", Toast.LENGTH_SHORT,false).show();
                         Intent registerIntent = new Intent(Register_Activity.this, Home.class);
-                        registerIntent.putExtra("UserObject",user);
+                        registerIntent.putExtra("UserID", userID);
                         startActivity(registerIntent);
                     } else {
                         Toasty.error(getApplicationContext(), "Registration Failed.", Toast.LENGTH_SHORT,false).show();

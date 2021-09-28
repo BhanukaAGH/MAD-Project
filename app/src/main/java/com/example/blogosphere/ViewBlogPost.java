@@ -30,19 +30,23 @@ public class ViewBlogPost extends AppCompatActivity {
     UserModel user;
     DBHelper myDB;
     String articleID;
+    int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_blog_post);
 
-        // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
-
         myDB = new DBHelper(this);
+
+        // Get login user object
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
         Intent i = getIntent();
         articleID = i.getStringExtra("StoryID");

@@ -37,22 +37,26 @@ public class ViewComment extends AppCompatActivity {
 
     UserModel user;
     String articleId;
+    int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_comment);
 
-        // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
-        Intent articlei = getIntent();
-        articleId = articlei.getStringExtra("StoryID");
-
         context = this;
         myDB = new DBHelper(context);
+
+        // Get login user object
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        articleId = getIntent().getStringExtra("StoryID");
+        user = myDB.getUserbyID(userID);
+
         listView = findViewById(R.id.listView);
         add = findViewById(R.id.buttonAdd);
         comments = findViewById(R.id.editTextComment);
@@ -73,7 +77,7 @@ public class ViewComment extends AppCompatActivity {
                 CommentModal comment = new CommentModal(userId, blogId, userComments, date);
                 myDB.addComment(comment);
                 Intent addCommentIntent = new Intent(ViewComment.this, ViewComment.class);
-                addCommentIntent.putExtra("UserObject", user);
+                addCommentIntent.putExtra("UserID", userID);
                 addCommentIntent.putExtra("id", String.valueOf(comment.getComId()));
                 addCommentIntent.putExtra("StoryID", articleId);
                 startActivity(addCommentIntent);
@@ -90,7 +94,7 @@ public class ViewComment extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         myDB.deleteComment(comment.getComId());
                         Intent deleteIntent = new Intent(context, ViewComment.class);
-                        deleteIntent.putExtra("UserObject", user);
+                        deleteIntent.putExtra("UserID", userID);
                         deleteIntent.putExtra("id", String.valueOf(comment.getComId()));
                         deleteIntent.putExtra("StoryID", articleId);
                         startActivity(deleteIntent);
@@ -101,7 +105,7 @@ public class ViewComment extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent addCommentintent = new Intent(ViewComment.this, AddComment.class);
-                        addCommentintent.putExtra("UserObject", user);
+                        addCommentintent.putExtra("UserID", userID);
                         addCommentintent.putExtra("id", String.valueOf(comment.getComId()));
                         addCommentintent.putExtra("StoryID", articleId);
                         startActivity(addCommentintent);
@@ -115,7 +119,7 @@ public class ViewComment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent viewblogIntent = new Intent(context, ViewBlogPost.class);
-                viewblogIntent.putExtra("UserObject", user);
+                viewblogIntent.putExtra("UserID", userID);
                 viewblogIntent.putExtra("StoryID", articleId);
                 startActivity(viewblogIntent);
             }

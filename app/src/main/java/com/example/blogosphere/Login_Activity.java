@@ -30,6 +30,8 @@ public class Login_Activity extends AppCompatActivity {
     Button loginBtn;
     DBHelper myDB;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +59,12 @@ public class Login_Activity extends AppCompatActivity {
                 user.setPassword(password);
 
                 boolean checkLogin = myDB.login(user);
+
                 if(checkLogin){
+                    userID = myDB.getLoginUserID(email);
                     Toasty.success(getApplicationContext(), "Login Successful.", Toast.LENGTH_SHORT,false).show();
                     Intent loginIntent = new Intent(Login_Activity.this, Home.class);
-                    loginIntent.putExtra("UserObject",user);
+                    loginIntent.putExtra("UserID", userID);
                     startActivity(loginIntent);
                 }else{
                     Toasty.error(getApplicationContext(), "Invalid Credentials.", Toast.LENGTH_SHORT,false).show();

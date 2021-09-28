@@ -42,6 +42,8 @@ public class Home extends AppCompatActivity {
     DBHelper myDB;
     UserModel user;
 
+    int userID;
+
     private List<ArticleModal> articles;
 
     @Override
@@ -51,11 +53,13 @@ public class Home extends AppCompatActivity {
 
         myDB = new DBHelper(this);
 
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-            myDB.getLoginUserID(user);
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
 //        Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -72,19 +76,19 @@ public class Home extends AppCompatActivity {
                         return true;
                     case R.id.bookmark:
                         Intent bookmarkIntent = new Intent(getApplicationContext(), Bookmarks.class);
-                        bookmarkIntent.putExtra("UserObject", user);
+                        bookmarkIntent.putExtra("UserID", userID);
                         startActivity(bookmarkIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.writepost:
                         Intent writepostIntent = new Intent(getApplicationContext(), Write_Story.class);
-                        writepostIntent.putExtra("UserObject", user);
+                        writepostIntent.putExtra("UserID", userID);
                         startActivity(writepostIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.profile:
                         Intent profileIntent = new Intent(getApplicationContext(), Profile.class);
-                        profileIntent.putExtra("UserObject", user);
+                        profileIntent.putExtra("UserID", userID);
                         startActivity(profileIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -132,7 +136,7 @@ public class Home extends AppCompatActivity {
     //    Search Article
     public void searchArticle(View view) {
         Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
-        searchIntent.putExtra("UserObject",user);
+        searchIntent.putExtra("UserID", userID);
         startActivity(searchIntent);
         overridePendingTransition(0, 0);
     }

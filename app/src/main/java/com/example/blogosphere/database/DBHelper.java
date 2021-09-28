@@ -170,18 +170,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void getLoginUserID(UserModel user) {
+    public int getLoginUserID(String email) {
         SQLiteDatabase db = getWritableDatabase();
         String GET_USER_ID = "SELECT * FROM " + USER_TABLE_NAME +
                 " WHERE " + COLUMN_NAME_USER_EMAIL + " = ?";
-        Cursor cursor = db.rawQuery(GET_USER_ID, new String[]{user.getEmail()});
+        Cursor cursor = db.rawQuery(GET_USER_ID, new String[]{email});
 
         if (cursor.moveToFirst()) {
             do {
-                user.setId(cursor.getInt(0));
+                return cursor.getInt(0);
             } while (cursor.moveToNext());
         }
         db.close();
+        return 0;
     }
 
     public String getUserNameById(int userID) {
@@ -480,8 +481,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT * FROM " + COMMENT_TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
+        int count = cursor.getCount();
         db.close();
-        return cursor.getCount();
+        return count;
     }
 
     //get All comments into a list
@@ -549,7 +551,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Hasith Queries
     /*++++++++++++++++++++++++ User Table Methods ++++++++++++++++++++++++*/
-    public UserModel getonerecord(int id){
+    public UserModel getUserbyID(int id){
         SQLiteDatabase db = getReadableDatabase();
         String query = " SELECT * FROM " + USER_TABLE_NAME+ " WHERE " +  COLUMN_USER_ID + " = ?";
         Cursor cursor = db.rawQuery(query ,new String[]{Integer.toString(id)});
@@ -566,6 +568,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return  uermodel;
     }
+
     public int Upatesave(UserModel model){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();

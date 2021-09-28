@@ -27,6 +27,8 @@ public class CreateNewList extends AppCompatActivity {
 
     Date date;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +42,13 @@ public class CreateNewList extends AppCompatActivity {
         myDB = new DBHelper(context);
 
         // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
         btn_create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +66,7 @@ public class CreateNewList extends AppCompatActivity {
                 myDB.addToTheList(listModel);
                 Toast.makeText(context, "You have successfully created a list", Toast.LENGTH_SHORT).show();
                 Intent intentbookmark = new Intent(context, Bookmarks.class);
-                intentbookmark.putExtra("UserObject", user);
+                intentbookmark.putExtra("UserID", userID);
                 startActivity(intentbookmark);
             }
         });

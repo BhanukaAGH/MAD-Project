@@ -28,10 +28,15 @@ public class UpdateUser extends AppCompatActivity {
     DBHelper myDB;
     UserModel user;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user);
+
+        context=this;
+        myDB = new DBHelper(context);
 
         // Get login user object
 //        if (user == null) {
@@ -39,20 +44,17 @@ public class UpdateUser extends AppCompatActivity {
 //            user = (UserModel) i.getSerializableExtra("UserObject");
 //        }
 
-        String userID = getIntent().getStringExtra("UserID");
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
-//        System.out.println(user.getId());
-        System.out.println(userID);
 
-        context=this;
-        myDB = new DBHelper(context);
-        user = myDB.getonerecord(Integer.parseInt(userID));
         name = findViewById(R.id.UpdateName);
         email =findViewById(R.id.UpdateEmail);
         about = findViewById(R.id.UdateAbout);
         Update = findViewById(R.id.UpadteBtn);
         upateimage =findViewById(R.id.Update_profile_image);
         select = findViewById(R.id.select_image);
+
         name.setText(user.getName());
         email.setText(user.getEmail());
         about.setText(user.getAbout());
@@ -75,7 +77,7 @@ public class UpdateUser extends AppCompatActivity {
                         Toast.makeText(context,"Succufully Upadated the Rows",Toast.LENGTH_SHORT).show();
                     }
                     Intent reIntent = new Intent(context, Edit_section.class);
-                    reIntent.putExtra("UserID", user.getId());
+                    reIntent.putExtra("UserID", userID);
                     startActivity(reIntent);
                 }
                 else {

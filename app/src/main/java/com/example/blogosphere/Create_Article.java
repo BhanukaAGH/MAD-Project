@@ -65,6 +65,8 @@ public class Create_Article extends AppCompatActivity {
     DBHelper myDB;
     Date date;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +75,11 @@ public class Create_Article extends AppCompatActivity {
         myDB = new DBHelper(this);
 
 //        Get login user object
-        Intent i = getIntent();
-        user = (UserModel) i.getSerializableExtra("UserObject");
+//        Intent i = getIntent();
+//        user = (UserModel) i.getSerializableExtra("UserObject");
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
         txtPublish = findViewById(R.id.txtPublish);
         txtPublish.setOnClickListener(new View.OnClickListener() {
@@ -327,7 +332,7 @@ public class Create_Article extends AppCompatActivity {
 
     public void backWriteStory(View view) {
         Intent writepostIntent = new Intent(getApplicationContext(), Write_Story.class);
-        writepostIntent.putExtra("UserObject", user);
+        writepostIntent.putExtra("UserID", userID);
         startActivity(writepostIntent);
         overridePendingTransition(0, 0);
     }

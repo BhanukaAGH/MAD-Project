@@ -26,23 +26,26 @@ public class AddComment extends AppCompatActivity {
     UserModel user;
     String articleId;
     String comId;
+    int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_comment);
 
-        // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
-
-        Intent articlei = getIntent();
-        articleId = articlei.getStringExtra("StoryID");
-
         context = this;
         myDB = new DBHelper(context);
+
+        // Get login user object
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        articleId = getIntent().getStringExtra("StoryID");
+        user = myDB.getUserbyID(userID);
+
         commentTxt = findViewById(R.id.etmUpdateComment);
         updateBtn = findViewById(R.id.buttonUpdate);
         closeBtn = findViewById(R.id.imageViewUpdClose);
@@ -64,7 +67,7 @@ public class AddComment extends AppCompatActivity {
                 int state = myDB.updateComment(comment1);
                 System.out.println(state);
                 Intent updateIntent = new Intent(context, ViewComment.class);
-                updateIntent.putExtra("UserObject", user);
+                updateIntent.putExtra("UserID", userID);
                 updateIntent.putExtra("StoryID", articleId);
                 updateIntent.putExtra("id", comId);
                 startActivity(updateIntent);
@@ -74,7 +77,7 @@ public class AddComment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent closeIntent = new Intent(context, ViewComment.class);
-                closeIntent.putExtra("UserObject", user);
+                closeIntent.putExtra("UserID", userID);
                 closeIntent.putExtra("StoryID", articleId);
                 closeIntent.putExtra("id", comId);
                 startActivity(closeIntent);

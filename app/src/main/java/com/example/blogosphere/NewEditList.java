@@ -21,6 +21,8 @@ public class NewEditList extends AppCompatActivity {
     private Context context;
     UserModel user;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +32,13 @@ public class NewEditList extends AppCompatActivity {
         myDB = new DBHelper(context);
 
         // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
         ET_EnterEditTopic = findViewById(R.id.ET_EnterEditTopic);
         ET_EnterEditDiscription = findViewById(R.id.ET_EnterEditDiscription);
@@ -44,7 +49,7 @@ public class NewEditList extends AppCompatActivity {
 
         ET_EnterEditTopic.setText(Newlistmodel.getList_Topic());
         ET_EnterEditDiscription.setText(Newlistmodel.getList_Description());
-        Integer userID = Newlistmodel.getUser_ID();
+        Integer listuserID = Newlistmodel.getUser_ID();
 
         btn_editList_Update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,10 +57,10 @@ public class NewEditList extends AppCompatActivity {
                 String listTopicedited = ET_EnterEditTopic.getText().toString();
                 String listdescriptionedited = ET_EnterEditDiscription.getText().toString();
 
-                ListModal listModel = new ListModal(Integer.parseInt(list_id),userID ,listTopicedited ,listdescriptionedited);
+                ListModal listModel = new ListModal(Integer.parseInt(list_id),listuserID ,listTopicedited ,listdescriptionedited);
                 myDB.updateSingleList(listModel);
                 Intent intentbookmark = new Intent(context,Bookmarks.class);
-                intentbookmark.putExtra("UserObject", user);
+                intentbookmark.putExtra("UserID", userID);
                 startActivity(intentbookmark);
             }
         });

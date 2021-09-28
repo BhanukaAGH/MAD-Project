@@ -36,6 +36,8 @@ public class Profile extends AppCompatActivity {
 
     private List<ArticleModal> articles;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +46,13 @@ public class Profile extends AppCompatActivity {
         myDB = new DBHelper(this);
 
 //        Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
 //        Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -62,19 +67,19 @@ public class Profile extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.home:
                         Intent homeIntent = new Intent(getApplicationContext(), Home.class);
-                        homeIntent.putExtra("UserObject", user);
+                        homeIntent.putExtra("UserID", userID);
                         startActivity(homeIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.bookmark:
                         Intent bookmarkIntent = new Intent(getApplicationContext(), Bookmarks.class);
-                        bookmarkIntent.putExtra("UserObject", user);
+                        bookmarkIntent.putExtra("UserID", userID);
                         startActivity(bookmarkIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.writepost:
                         Intent writepostIntent = new Intent(getApplicationContext(), Write_Story.class);
-                        writepostIntent.putExtra("UserObject", user);
+                        writepostIntent.putExtra("UserID", userID);
                         startActivity(writepostIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -94,7 +99,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent editIntent = new Intent(Profile.this,Edit_section.class);
-                editIntent.putExtra("UserObject", user);
+                editIntent.putExtra("UserID", userID);
                 startActivity(editIntent);
                 overridePendingTransition(0, 0);
             }
@@ -129,7 +134,7 @@ public class Profile extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent editArticle = new Intent(Profile.this,Edit_Article.class);
                                 Bundle extras = new Bundle();
-                                extras.putSerializable("UserObject", user);
+                                extras.putInt("UserID", userID);
                                 extras.putString("StoryID",Integer.toString(article.getId()));
                                 editArticle.putExtras(extras);
                                 startActivity(editArticle);
@@ -141,7 +146,7 @@ public class Profile extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 myDB.deleteArticle(article.getId());
                                 Intent dintent = new Intent(Profile.this, Profile.class);
-                                dintent.putExtra("UserObject", user);
+                                dintent.putExtra("UserID", userID);
                                 startActivity(dintent);
                                 overridePendingTransition(0, 0);
                             }
@@ -184,7 +189,7 @@ class UserAdapter extends ArrayAdapter<ArticleModal> {
         ArticleModal article = articles.get(position);
         imageView.setImageBitmap(article.getImage());
         articleImageView.setImageBitmap(article.getImage());
-//        textname.setText(myDB.getUserNameById(article.getWriter_id()));
+        textname.setText(myDB.getUserNameById(article.getWriter_id()));
         textname.setText("Mark Dale");
         post.setText(article.getTitle());
 

@@ -15,16 +15,20 @@ public class Write_Story extends AppCompatActivity {
 
     UserModel user;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_story);
 
 //        Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
 
 //       Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -39,13 +43,13 @@ public class Write_Story extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.home:
                         Intent homeIntent = new Intent(getApplicationContext(), Home.class);
-                        homeIntent.putExtra("UserObject", user);
+                        homeIntent.putExtra("UserID", userID);
                         startActivity(homeIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.bookmark:
                         Intent bookmarkIntent = new Intent(getApplicationContext(), Bookmarks.class);
-                        bookmarkIntent.putExtra("UserObject", user);
+                        bookmarkIntent.putExtra("UserID", userID);
                         startActivity(bookmarkIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -53,7 +57,7 @@ public class Write_Story extends AppCompatActivity {
                         return true;
                     case R.id.profile:
                         Intent profileIntent = new Intent(getApplicationContext(), Profile.class);
-                        profileIntent.putExtra("UserObject", user);
+                        profileIntent.putExtra("UserID", userID);
                         startActivity(profileIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -66,7 +70,7 @@ public class Write_Story extends AppCompatActivity {
 
     public void writeArticle(View view) {
         Intent writeArticle = new Intent(getApplicationContext(), Create_Article.class);
-        writeArticle.putExtra("UserObject", user);
+        writeArticle.putExtra("UserID", userID);
         startActivity(writeArticle);
         overridePendingTransition(0, 0);
     }

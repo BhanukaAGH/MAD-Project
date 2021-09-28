@@ -35,19 +35,25 @@ public class Bookmarks extends AppCompatActivity {
     Context context ;
     private DBHelper myDB;
 
-
     UserModel user;
+
+    int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
 
+        myDB = new DBHelper(this);
+
 //        Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
 
 //        Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -62,7 +68,7 @@ public class Bookmarks extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.home:
                         Intent homeIntent = new Intent(getApplicationContext(), Home.class);
-                        homeIntent.putExtra("UserObject", user);
+                        homeIntent.putExtra("UserID", userID);
                         startActivity(homeIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -70,13 +76,13 @@ public class Bookmarks extends AppCompatActivity {
                         return true;
                     case R.id.writepost:
                         Intent writepostIntent = new Intent(getApplicationContext(), Write_Story.class);
-                        writepostIntent.putExtra("UserObject", user);
+                        writepostIntent.putExtra("UserID", userID);
                         startActivity(writepostIntent);
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.profile:
                         Intent profileIntent = new Intent(getApplicationContext(), Profile.class);
-                        profileIntent.putExtra("UserObject", user);
+                        profileIntent.putExtra("UserID", userID);
                         startActivity(profileIntent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -92,7 +98,6 @@ public class Bookmarks extends AppCompatActivity {
 
         rowreadinglistView = findViewById(R.id.listview_home);
         start_now = findViewById(R.id.btn_startnow);
-        myDB = new DBHelper(context);
         listmodel = new ArrayList<>();
         listmodel = myDB.getAllLists();
 
@@ -103,7 +108,7 @@ public class Bookmarks extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),CreateNewList.class);
-                i.putExtra("UserObject", user);
+                i.putExtra("UserID", userID);
                 Toast.makeText(getApplicationContext(), "create new list has pressed", Toast.LENGTH_SHORT).show();
                 startActivity(i);
             }
@@ -137,7 +142,7 @@ public class Bookmarks extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         myDB.deleteList(listmodelsLongClick.getList_ID());
                         Intent bookmarkI = new Intent(context,Bookmarks.class);
-                        bookmarkI.putExtra("UserObject", user);
+                        bookmarkI.putExtra("UserID", userID);
                         startActivity(bookmarkI);
                     }
                 });
@@ -146,7 +151,7 @@ public class Bookmarks extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(context,NewEditList.class);
-                        intent.putExtra("UserObject", user);
+                        intent.putExtra("UserID", userID);
                         intent.putExtra("LIST_ID",String.valueOf(listmodelsLongClick.getList_ID()));
                         startActivity(intent);
                     }

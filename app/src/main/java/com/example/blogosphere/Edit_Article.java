@@ -61,6 +61,8 @@ public class Edit_Article extends AppCompatActivity {
     DBHelper myDB;
     Date date;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +73,9 @@ public class Edit_Article extends AppCompatActivity {
         // Get login user object
         Intent i = getIntent();
         Bundle extras = i.getExtras();
-        user = (UserModel) extras.getSerializable("UserObject");
+        userID = extras.getInt("UserID");
         String articleID = extras.getString("StoryID");
+        user = myDB.getUserbyID(userID);
 
         article = myDB.getSingleArticle(articleID);
 
@@ -248,7 +251,7 @@ public class Edit_Article extends AppCompatActivity {
 
     public void backProfile(View view) {
         Intent editpostIntent = new Intent(getApplicationContext(), Profile.class);
-        editpostIntent.putExtra("UserObject", user);
+        editpostIntent.putExtra("UserID", userID);
         startActivity(editpostIntent);
         overridePendingTransition(0, 0);
     }

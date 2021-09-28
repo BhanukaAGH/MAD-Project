@@ -41,32 +41,39 @@ public class Edit_section extends AppCompatActivity {
     private Bitmap selectimage;
     UserModel user;
 
+    int userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_section);
 
-        // Get login user object
-        if (user == null) {
-            Intent i = getIntent();
-            user = (UserModel) i.getSerializableExtra("UserObject");
-        }
-
         context = this;
+        myDB = new DBHelper(context);
+
+        // Get login user object
+//        if (user == null) {
+//            Intent i = getIntent();
+//            user = (UserModel) i.getSerializableExtra("UserObject");
+//        }
+
+        userID = getIntent().getIntExtra("UserID",0);
+        user = myDB.getUserbyID(userID);
+
         name = findViewById(R.id.editname);
         email = findViewById(R.id.editemail);
         choosebtn = findViewById(R.id.user_name);
         save = findViewById(R.id.savebtn);
         aboutuser = findViewById(R.id.editabout);
-        myDB = new DBHelper(context);
         imgeview = findViewById(R.id.Update_profile_image);
         btnUpdateView = findViewById(R.id.upate);
         deleteaccount = findViewById(R.id.delete);
-        user = myDB.getonerecord(user.getId());
+
         imgeview.setImageBitmap(user.getImage());
         name.setText(user.getName());
         email.setText(user.getEmail());
         aboutuser.setText(user.getAbout());
+
         String checkname = name.getText().toString();
         String checkemail = email.getText().toString();
 
@@ -98,7 +105,7 @@ public class Edit_section extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent homeIntent = new Intent(context, UpdateUser.class);
-                homeIntent.putExtra("UserID", String.valueOf(user.getId()));
+                homeIntent.putExtra("UserID", userID);
                 startActivity(homeIntent);
             }
         });
@@ -124,7 +131,7 @@ public class Edit_section extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent noIntent = new Intent(context, Edit_section.class);
-                        noIntent.putExtra("UserObject", user);
+                        noIntent.putExtra("UserID", userID);
                         startActivity(noIntent);
                     }
                 });

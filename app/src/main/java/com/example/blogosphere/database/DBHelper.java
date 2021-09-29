@@ -551,55 +551,58 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Hasith Queries
     /*++++++++++++++++++++++++ User Table Methods ++++++++++++++++++++++++*/
-    public UserModel getUserbyID(int id){
+    public UserModel getUserbyID(int id) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = " SELECT * FROM " + USER_TABLE_NAME+ " WHERE " +  COLUMN_USER_ID + " = ?";
-        Cursor cursor = db.rawQuery(query ,new String[]{Integer.toString(id)});
+        String query = " SELECT * FROM " + USER_TABLE_NAME + " WHERE " + COLUMN_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(id)});
         UserModel uermodel = new UserModel();
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             uermodel.setName(cursor.getString(1));
             uermodel.setEmail(cursor.getString(2));
             uermodel.setAbout(cursor.getString(5));
-            byte[] imagebytes= cursor.getBlob(4);
-            Bitmap objectbitmap = BitmapFactory.decodeByteArray(imagebytes,0,imagebytes.length);
-            uermodel.setImage(objectbitmap);
+            byte[] imagebytes = cursor.getBlob(4);
+            if (imagebytes != null) {
+            Bitmap objectbitmap = BitmapFactory.decodeByteArray(imagebytes, 0, imagebytes.length);
+                uermodel.setImage(objectbitmap);
+            }
         }
         db.close();
-        return  uermodel;
+        return uermodel;
     }
 
-    public int Upatesave(UserModel model){
+    public int Upatesave(UserModel model) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_USER_NAME, model.getName());
         contentValues.put(COLUMN_NAME_USER_EMAIL, model.getEmail());
         contentValues.put(COLUMN_NAME_USER_ABOUT, model.getAbout());
 
-        int stauts = db.update(USER_TABLE_NAME,contentValues, COLUMN_USER_ID +" =?",new String[]{String.valueOf(model.getId())} );
+        int stauts = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(model.getId())});
         db.close();
         return stauts;
     }
 
-    public int imageinsert(UserModel modelobject){
+    public int imageinsert(UserModel modelobject) {
         SQLiteDatabase db = getWritableDatabase();
         Bitmap imagetostore = modelobject.getImage();
-        byteArrayOutputStream= new ByteArrayOutputStream();
-        imagetostore.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        imagetostore.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         imageInBytes = byteArrayOutputStream.toByteArray();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_USER_NAME, modelobject.getName());
         contentValues.put(COLUMN_NAME_USER_IMAGE, imageInBytes);
         contentValues.put(COLUMN_NAME_USER_ABOUT, modelobject.getAbout());
-        int stauts = db.update(USER_TABLE_NAME,contentValues, COLUMN_USER_ID +" =?",new String[]{String.valueOf(modelobject.getId())} );
+        int stauts = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(modelobject.getId())});
         db.close();
         return stauts;
     }
-    public int deleteaccount(int id){
+
+    public int deleteaccount(int id) {
         SQLiteDatabase db = getWritableDatabase();
-        int result= db.delete(USER_TABLE_NAME,COLUMN_USER_ID + " =?",new String[]{String.valueOf(id)});
+        int result = db.delete(USER_TABLE_NAME, COLUMN_USER_ID + " =?", new String[]{String.valueOf(id)});
         db.close();
-        return  result;
+        return result;
     }
 
 }

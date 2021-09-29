@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Blogosphere">
         <activity
+            android:name=".OtherProfileView"
+            android:exported="true" />
+        <activity
             android:name=".UpdateUser"
             android:exported="true" />
         <activity

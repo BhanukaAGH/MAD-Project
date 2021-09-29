@@ -144,11 +144,7 @@ public class Profile extends AppCompatActivity {
                         .setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                myDB.deleteArticle(article.getId());
-                                Intent dintent = new Intent(Profile.this, Profile.class);
-                                dintent.putExtra("UserID", userID);
-                                startActivity(dintent);
-                                overridePendingTransition(0, 0);
+                                articleDeleteConfirm();
                             }
                         })
                         .show();
@@ -157,7 +153,33 @@ public class Profile extends AppCompatActivity {
 
     }
 
+    public void articleDeleteConfirm(){
+        new MaterialAlertDialogBuilder(Profile.this)
+                .setTitle("Are you sure you want to delete this article ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        myDB.deleteArticle(article.getId());
+                        Intent dintent = new Intent(Profile.this, Profile.class);
+                        dintent.putExtra("UserID", userID);
+                        startActivity(dintent);
+                        overridePendingTransition(0, 0);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent dintent = new Intent(Profile.this, Profile.class);
+                        dintent.putExtra("UserID", userID);
+                        startActivity(dintent);
+                        overridePendingTransition(0, 0);
+                    }
+                })
+                .show();
+    }
+
 }
+
 
 class UserAdapter extends ArrayAdapter<ArticleModal> {
 

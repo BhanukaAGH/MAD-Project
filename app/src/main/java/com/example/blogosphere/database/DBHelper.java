@@ -591,16 +591,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return uermodel;
     }
 
-    public int Upatesave(UserModel model) {
+    public int Datarewrite(UserModel uermodel){
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_USER_NAME, model.getName());
-        contentValues.put(COLUMN_NAME_USER_EMAIL, model.getEmail());
-        contentValues.put(COLUMN_NAME_USER_ABOUT, model.getAbout());
-
-        int stauts = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(model.getId())});
-        db.close();
-        return stauts;
+        ContentValues contentValues =  new ContentValues();
+        contentValues.put(COLUMN_NAME_USER_NAME,uermodel.getName());
+        contentValues.put(COLUMN_NAME_USER_EMAIL, uermodel.getEmail());
+        contentValues.put(COLUMN_NAME_USER_ABOUT, uermodel.getAbout());
+        int res = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(uermodel.getId())});
+        return res;
     }
 
     public int imageinsert(UserModel modelobject) {

@@ -28,6 +28,8 @@
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_main.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_new_edit_list.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_new_viewed_list.xml" value="0.33" />
+        <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_other_profile_view.xml" value="0.3541666666666667" />
+        <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_otherprofile_section.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_profile.xml" value="0.33" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_register.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/activity_search.xml" value="0.33" />
@@ -39,6 +41,7 @@
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/add_tags_bottom_sheet.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/add_tags_dialog.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/following_list_item.xml" value="0.3541666666666667" />
+        <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/post_structure.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/raw.xml" value="0.33" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/rowreadinglists.xml" value="0.3541666666666667" />
         <entry key="..\:/Users/Hashan/AndroidStudioProjects/Blogosphere/app/src/main/res/layout/rowviewedlist.xml" value="0.3541666666666667" />

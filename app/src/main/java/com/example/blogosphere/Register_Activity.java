@@ -30,8 +30,14 @@ public class Register_Activity extends AppCompatActivity {
     TextView txt_login;
     Button registerBtn;
     DBHelper myDB;
-
     int userID;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Register_Activity.this,FirstView.class));
+        overridePendingTransition(0, 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,7 @@ public class Register_Activity extends AppCompatActivity {
                             Intent registerIntent = new Intent(Register_Activity.this, Home.class);
                             registerIntent.putExtra("UserID", userID);
                             startActivity(registerIntent);
+                            overridePendingTransition(0, 0);
                         } else {
                             Toasty.error(getApplicationContext(), "Registration Failed.", Toast.LENGTH_SHORT, false).show();
                         }

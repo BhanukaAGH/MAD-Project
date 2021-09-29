@@ -66,10 +66,11 @@ public class UpdateUser extends AppCompatActivity {
             public void onClick(View v) {
                 String emalivalidate =  email.getText().toString();
                 if(isValidEmailAddress(emalivalidate)){
+                    user.setId(userID);
                     user.setName(name.getText().toString());
                     user.setEmail(email.getText().toString());
                     user.setAbout(about.getText().toString());
-                    int row= myDB.Upatesave(user);
+                    int row= myDB.Datarewrite(user);
                     if(!(row==0)){
                         Toast.makeText(context,"Succufully Upadated the Rows",Toast.LENGTH_SHORT).show();
                     }

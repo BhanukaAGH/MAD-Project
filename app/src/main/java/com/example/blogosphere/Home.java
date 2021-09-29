@@ -116,7 +116,7 @@ public class Home extends AppCompatActivity {
 
         articles = myDB.getAllArticles();
 
-        CustomAdapter adapterArticle = new CustomAdapter(this,R.layout.single_article_row,articles,myDB);
+        CustomAdapter adapterArticle = new CustomAdapter(this,R.layout.single_article_row,articles,myDB,userID);
         articleList = findViewById(R.id.articleList);
         articleList.setAdapter(adapterArticle);
 
@@ -150,13 +150,15 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
     List<ArticleModal> articles;
     List<ListModal> bookmarkList;
     DBHelper myDB;
+    int userID;
 
-    CustomAdapter(Context context,int resource, List<ArticleModal> articles,DBHelper myDB ) {
+    CustomAdapter(Context context,int resource, List<ArticleModal> articles,DBHelper myDB,int userID ) {
         super(context,resource,articles);
         this.context = context;
         this.resource = resource;
         this.articles = articles;
         this.myDB = myDB;
+        this.userID = userID;
     }
 
     @NonNull
@@ -180,11 +182,19 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
         articleImgView.setImageBitmap(article.getImage());
         dateView.setText(article.getDate());
 
+        authorImgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context,OtherProfileView.class);
+                i.putExtra("UserID", userID);
+                i.putExtra("authorID",article.getWriter_id());
+                context.startActivity(i);
+            }
+        });
+
         bookmarkIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toasty.normal(context,"Bookmark Icon Clicked" + position).show();
-
                 bookmarkList = myDB.getAllLists();
                 String []singleItem = new String[bookmarkList.size()];
 

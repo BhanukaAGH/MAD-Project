@@ -29,6 +29,12 @@ public class UserModel implements Serializable {
         this.about = about;
     }
 
+    public UserModel(Bitmap image, String name, String about) {
+        this.image = image;
+        this.name = name;
+        this.about = about;
+    }
+
     public int getId() {
         return id;
     }

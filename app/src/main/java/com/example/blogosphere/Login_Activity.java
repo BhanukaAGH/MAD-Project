@@ -29,8 +29,14 @@ public class Login_Activity extends AppCompatActivity {
     TextView txt_register;
     Button loginBtn;
     DBHelper myDB;
-
     int userID;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Login_Activity.this,FirstView.class));
+        overridePendingTransition(0, 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class Login_Activity extends AppCompatActivity {
                     Intent loginIntent = new Intent(Login_Activity.this, Home.class);
                     loginIntent.putExtra("UserID", userID);
                     startActivity(loginIntent);
+                    overridePendingTransition(0, 0);
                 }else{
                     Toasty.error(getApplicationContext(), "Invalid Credentials.", Toast.LENGTH_SHORT,false).show();
                 }

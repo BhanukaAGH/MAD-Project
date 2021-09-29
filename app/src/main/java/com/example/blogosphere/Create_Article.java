@@ -310,6 +310,11 @@ public class Create_Article extends AppCompatActivity {
                                 // new Lines End
                                 if (publishPost == true) {
                                     Toasty.success(Create_Article.this, "Post Published.", Toast.LENGTH_SHORT, false).show();
+                                    Intent publishedIntent = new Intent(Create_Article.this, Home.class);
+                                    publishedIntent.putExtra("UserID", userID);
+                                    startActivity(publishedIntent);
+                                    overridePendingTransition(0, 0);
+
                                 } else {
                                     Toasty.error(Create_Article.this, "Post Published Failed.", Toast.LENGTH_SHORT, false).show();
                                 }

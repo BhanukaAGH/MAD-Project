@@ -9,7 +9,7 @@
     <string name="txt_Publish">Publish</string>
     <string name="write_story">Write Your Story</string>
     <string name="add_tags">Add tags</string>
-    <string name="edt_add_tag">Add Tag</string>
+    <string name="edt_add_title">Add Title to the Article</string>
     <string name="tag_name">Tag Name</string>
     <string name="write_one_story">Write a story</string>
     <string name="txt_create">Create</string>
@@ -17,6 +17,7 @@
     <string name="sign_in">Sign In</string>
     <string name="edt_Email">Email</string>
     <string name="edt_Password">Password</string>
+    <string name="edt_Confirm_Password">Confirm Password</string>
     <string name="not_register">Not registered yet</string>
     <string name="sign_up_here">Sign Up here</string>
     <string name="sign_up">Sign Up</string>

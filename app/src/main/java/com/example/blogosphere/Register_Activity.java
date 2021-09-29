@@ -26,6 +26,7 @@ public class Register_Activity extends AppCompatActivity {
 
     TextInputLayout RegisterInputEmail;
     TextInputLayout RegisterInputPass;
+    TextInputLayout RegisterInputConfirmPass;
     TextView txt_login;
     Button registerBtn;
     DBHelper myDB;
@@ -39,6 +40,7 @@ public class Register_Activity extends AppCompatActivity {
 
         RegisterInputEmail = findViewById(R.id.inLayLogEmail);
         RegisterInputPass = findViewById(R.id.inLayLogPass);
+        RegisterInputConfirmPass = findViewById(R.id.inLayLogConfirmPass);
         txt_login = findViewById(R.id.tvLoginHere);
         registerBtn = findViewById(R.id.btnRegister);
 
@@ -53,26 +55,31 @@ public class Register_Activity extends AppCompatActivity {
 
                 String email = RegisterInputEmail.getEditText().getText().toString();
                 String password = RegisterInputPass.getEditText().getText().toString();
+                String Confirm_password = RegisterInputConfirmPass.getEditText().getText().toString();
 
-                UserModel user = new UserModel();
-                user.setEmail(email);
-                user.setPassword(password);
+                if (password.equals(Confirm_password)) {
+                    UserModel user = new UserModel();
+                    user.setEmail(email);
+                    user.setPassword(password);
 
-                boolean checkUserAlreadyExists = myDB.checkUserExists(user);
-                if (checkUserAlreadyExists) {
-                    Toasty.normal(getApplicationContext(), "User already Exists. Please Sign In").show();
+                    boolean checkUserAlreadyExists = myDB.checkUserExists(user);
+                    if (checkUserAlreadyExists) {
+                        Toasty.normal(getApplicationContext(), "User already Exists. Please Sign In").show();
 
-                } else {
-                    boolean registerSuccess = myDB.userRegister(user);
-                    if (registerSuccess) {
-                        userID = myDB.getLoginUserID(email);
-                        Toasty.success(getApplicationContext(), "Registration Successful.", Toast.LENGTH_SHORT,false).show();
-                        Intent registerIntent = new Intent(Register_Activity.this, Home.class);
-                        registerIntent.putExtra("UserID", userID);
-                        startActivity(registerIntent);
                     } else {
-                        Toasty.error(getApplicationContext(), "Registration Failed.", Toast.LENGTH_SHORT,false).show();
+                        boolean registerSuccess = myDB.userRegister(user);
+                        if (registerSuccess) {
+                            userID = myDB.getLoginUserID(email);
+                            Toasty.success(getApplicationContext(), "Registration Successful.", Toast.LENGTH_SHORT, false).show();
+                            Intent registerIntent = new Intent(Register_Activity.this, Home.class);
+                            registerIntent.putExtra("UserID", userID);
+                            startActivity(registerIntent);
+                        } else {
+                            Toasty.error(getApplicationContext(), "Registration Failed.", Toast.LENGTH_SHORT, false).show();
+                        }
                     }
+                } else {
+                    Toasty.error(getApplicationContext(), "Password is not matched.", Toast.LENGTH_SHORT, false).show();
                 }
             }
         });

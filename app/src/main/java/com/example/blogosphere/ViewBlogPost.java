@@ -33,6 +33,13 @@ public class ViewBlogPost extends AppCompatActivity {
     int userID;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ViewBlogPost.this,Home.class));
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_blog_post);
@@ -70,6 +77,8 @@ public class ViewBlogPost extends AppCompatActivity {
 
         int CommentCount = myDB.countComments();
         commentCountView.setText(Integer.toString(CommentCount));
+        authorView.setText(myDB.getUserNameById(article.getWriter_id()));
+        authorImage.setImageBitmap(myDB.getUserImageById(article.getWriter_id()));
 
         commentView.setOnClickListener(new View.OnClickListener() {
             @Override

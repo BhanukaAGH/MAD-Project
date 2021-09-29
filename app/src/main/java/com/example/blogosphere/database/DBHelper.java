@@ -201,6 +201,26 @@ public class DBHelper extends SQLiteOpenHelper {
         return authorName;
     }
 
+    public Bitmap getUserImageById(int userID) {
+        byte[] imagebytes = null;
+        Bitmap objectbitmap = null;
+        SQLiteDatabase db = getWritableDatabase();
+        String GET_USER_IMAGE = "SELECT " + COLUMN_NAME_USER_IMAGE + " FROM " + USER_TABLE_NAME +
+                " WHERE " + COLUMN_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(GET_USER_IMAGE, new String[]{Integer.toString(userID)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                imagebytes = cursor.getBlob(0);
+            } while (cursor.moveToNext());
+        }
+        if (imagebytes != null) {
+            objectbitmap = BitmapFactory.decodeByteArray(imagebytes, 0, imagebytes.length);
+        }
+        db.close();
+        return objectbitmap;
+    }
+
     /*++++++++++++++++++++++++ Article Table Methods ++++++++++++++++++++++++*/
     public boolean publishArticle(ArticleModal article) {
         SQLiteDatabase db = getWritableDatabase();

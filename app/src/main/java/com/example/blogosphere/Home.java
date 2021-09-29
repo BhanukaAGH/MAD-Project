@@ -176,7 +176,7 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
 
         authorView.setText(myDB.getUserNameById(article.getWriter_id()));
         articlDesc.setText(article.getTitle());
-        authorImgView.setImageBitmap(article.getImage());
+        authorImgView.setImageBitmap(myDB.getUserImageById(article.getWriter_id()));
         articleImgView.setImageBitmap(article.getImage());
         dateView.setText(article.getDate());
 

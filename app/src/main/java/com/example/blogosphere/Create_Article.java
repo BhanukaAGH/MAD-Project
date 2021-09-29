@@ -297,7 +297,7 @@ public class Create_Article extends AppCompatActivity {
                                 String articleTile = articleName.getText().toString();
                                 article.setTitle(articleTile);
                                 article.setContent(storyContent);
-                                article.setWriter_id(user.getId());
+                                article.setWriter_id(userID);
                                 date = new Date();
                                 article.setDate(String.format(" %tb %<te",date));
                                 boolean publishPost = myDB.publishArticle(article);

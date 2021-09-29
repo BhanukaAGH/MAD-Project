@@ -601,17 +601,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public int imageinsert(UserModel modelobject) {
+    public int imageinsert(int ID,String name,Bitmap image, String about) {
         SQLiteDatabase db = getWritableDatabase();
-        Bitmap imagetostore = modelobject.getImage();
+        Bitmap imagetostore = image;
         byteArrayOutputStream = new ByteArrayOutputStream();
         imagetostore.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         imageInBytes = byteArrayOutputStream.toByteArray();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_USER_NAME, modelobject.getName());
+        contentValues.put(COLUMN_NAME_USER_NAME, name);
         contentValues.put(COLUMN_NAME_USER_IMAGE, imageInBytes);
-        contentValues.put(COLUMN_NAME_USER_ABOUT, modelobject.getAbout());
-        int stauts = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(modelobject.getId())});
+        contentValues.put(COLUMN_NAME_USER_ABOUT, about);
+        int stauts = db.update(USER_TABLE_NAME, contentValues, COLUMN_USER_ID + " =?", new String[]{String.valueOf(ID)});
         db.close();
         return stauts;
     }

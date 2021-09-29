@@ -41,22 +41,14 @@ public class Home extends AppCompatActivity {
     private ListView articleList;
     DBHelper myDB;
     UserModel user;
-
     int userID;
-
     private List<ArticleModal> articles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         myDB = new DBHelper(this);
-
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
 
         userID = getIntent().getIntExtra("UserID",0);
         user = myDB.getUserbyID(userID);

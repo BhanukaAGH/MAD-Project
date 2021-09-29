@@ -51,12 +51,6 @@ public class Edit_section extends AppCompatActivity {
         context = this;
         myDB = new DBHelper(context);
 
-        // Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
-
         userID = getIntent().getIntExtra("UserID",0);
         user = myDB.getUserbyID(userID);
 
@@ -69,7 +63,9 @@ public class Edit_section extends AppCompatActivity {
         btnUpdateView = findViewById(R.id.upate);
         deleteaccount = findViewById(R.id.delete);
 
-        imgeview.setImageBitmap(user.getImage());
+        if(user.getImage() != null ){
+            imgeview.setImageBitmap(user.getImage());
+        }
         name.setText(user.getName());
         email.setText(user.getEmail());
         aboutuser.setText(user.getAbout());
@@ -94,9 +90,11 @@ public class Edit_section extends AppCompatActivity {
                 user.setName(name.getText().toString());
                 user.setImage(selectimage);
                 user.setAbout(About);
-                int nu = myDB.imageinsert(user);
-                imgeview.setImageBitmap(user.getImage());
-                aboutuser.setText(user.getAbout());
+                int nu = myDB.imageinsert(userID,name.getText().toString(), selectimage,aboutuser.getText().toString());
+                Intent reM = new Intent(Edit_section.this,Edit_section.class);
+                reM.putExtra("UserID", userID);
+                startActivity(reM);
+                overridePendingTransition(0,0);
 
             }
         });

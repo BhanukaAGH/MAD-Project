@@ -9,14 +9,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.blogosphere.database.DBHelper;
+import com.example.blogosphere.database.FollowModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class FollowingListRecViewAdapter extends  RecyclerView.Adapter<FollowingListRecViewAdapter.ViewHolder> {
 
-    private ArrayList<Followers> followers = new ArrayList<>();
+    private List<FollowModel> followers = new ArrayList<>();
+    private DBHelper myDB;
 
-    public FollowingListRecViewAdapter() {
-
+    public FollowingListRecViewAdapter(DBHelper myDB) {
+        this.myDB = myDB;
     }
 
     @NonNull
@@ -29,8 +34,8 @@ public class FollowingListRecViewAdapter extends  RecyclerView.Adapter<Following
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtName.setText(followers.get(position).getName());
-        holder.followerImg.setImageResource(followers.get(position).getImage());
+        holder.txtName.setText(myDB.getUserNameById(followers.get(position).getUserid()));
+        holder.followerImg.setImageBitmap(myDB.getUserImageById(followers.get(position).getUserid()));
     }
 
     @Override
@@ -38,7 +43,7 @@ public class FollowingListRecViewAdapter extends  RecyclerView.Adapter<Following
         return followers.size();
     }
 
-    public void setFollowers(ArrayList<Followers> followers) {
+    public void setFollowers(List<FollowModel> followers) {
         this.followers = followers;
         notifyDataSetChanged();
     }

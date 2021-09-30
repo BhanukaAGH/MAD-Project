@@ -13,13 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 8;
+    private static final int VERSION = 9;
     private static final String DATABASE_NAME = "Blogosphere";
     private static final String USER_TABLE_NAME = "users";
     private static final String ARTICLE_TABLE_NAME = "articles";
     private static final String TAGS_TABLE_NAME = "tags";
     private static final String LIST_TABLE_NAME = "List";
     private static final String COMMENT_TABLE_NAME = "comments";
+    private static final String FOLLOWERS_TABLE_NAME = "followers";
 
     // User table column names
     private static final String COLUMN_USER_ID = "id";
@@ -55,6 +56,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_COMMENT_BLOG_ID = "blog_id";
     private static final String COLUMN_NAME_COMMENT_COMMENT = "comment";
     private static final String COLUMN_NAME_COMMENT_DATE = "date";
+
+    //Followers table column name
+    private static final String COLUMN_NAME_CURRENT_ID = "current_id";
+    private static final String COLUMN_NAME_FOLLOW_USER_ID = "follow_user_id";
 
 
     private ByteArrayOutputStream byteArrayOutputStream;
@@ -104,11 +109,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 + COLUMN_NAME_COMMENT_DATE + " TEXT" +
                 ");";
 
+        String FOLLOWERS_TABLE_CREATE_QUERY = "CREATE TABLE " + FOLLOWERS_TABLE_NAME + " (" +
+                COLUMN_NAME_CURRENT_ID + " INTEGER," +
+                COLUMN_NAME_FOLLOW_USER_ID + " INTEGER," +
+                "PRIMARY KEY (" + COLUMN_NAME_CURRENT_ID + "," + COLUMN_NAME_FOLLOW_USER_ID + ") );";
+
         db.execSQL(SQL_USER_CREATE_ENTRIES);
         db.execSQL(SQL_ARTICLE_CREATE_ENTRIES);
         db.execSQL(SQL_TAGS_CREATE_ENTRIES);
         db.execSQL(LIST_TABLE_CREATE_QUERY);
         db.execSQL(COMMENT_TABLE_CREATE_QUERY);
+        db.execSQL(FOLLOWERS_TABLE_CREATE_QUERY);
     }
 
     @Override
@@ -118,6 +129,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TAGS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + LIST_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + COMMENT_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + FOLLOWERS_TABLE_NAME);
         onCreate(db);
     }
 
@@ -621,6 +633,69 @@ public class DBHelper extends SQLiteOpenHelper {
         int result = db.delete(USER_TABLE_NAME, COLUMN_USER_ID + " =?", new String[]{String.valueOf(id)});
         db.close();
         return result;
+    }
+
+    /*++++++++++++++++++++++++ Followers Table Methods ++++++++++++++++++++++++*/
+    public void InsertFollwingID(int current, int follow) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_CURRENT_ID, current);
+        contentValues.put(COLUMN_NAME_FOLLOW_USER_ID, follow);
+        long result = db.insert(FOLLOWERS_TABLE_NAME, null, contentValues);
+        db.close();
+    }
+
+    public void UnFollow(int current, int follwo) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(FOLLOWERS_TABLE_NAME, COLUMN_NAME_CURRENT_ID + " =? and " + COLUMN_NAME_FOLLOW_USER_ID + " =?",
+                new String[]{Integer.toString(current), Integer.toString(follwo)});
+        db.close();
+
+    }
+
+    public FollowModel ReadIds(int current, int follw){
+        FollowModel followModel = new FollowModel();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = " SELECT * FROM " + FOLLOWERS_TABLE_NAME + " WHERE " + COLUMN_NAME_CURRENT_ID + " =? and " + COLUMN_NAME_FOLLOW_USER_ID + " =?";
+        Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(current),Integer.toString(follw)});
+        if ( cursor.moveToFirst()) {
+            followModel.setUserid(cursor.getInt(0));
+            followModel.setCurrentid(cursor.getInt(1));
+        }
+        db.close();
+        return  followModel;
+    }
+
+    public int CountRows(int userID){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = " SELECT * FROM " + FOLLOWERS_TABLE_NAME + " WHERE " + COLUMN_NAME_CURRENT_ID + " =?";
+        Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(userID)});
+        int i = cursor.getCount();
+        db.close();
+        return  i;
+    }
+
+    public List<FollowModel> getCurrentUserFollowers(String userID){
+        List<FollowModel> followers = new ArrayList();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + FOLLOWERS_TABLE_NAME + " WHERE " + COLUMN_NAME_CURRENT_ID +
+                " =?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{userID});
+        if (cursor.moveToFirst()) {
+            do {
+                // Create new ArticleModel object
+                FollowModel follower = new FollowModel();
+                // set methods
+                follower.setCurrentid(cursor.getInt(0));
+                follower.setUserid(cursor.getInt(1));
+
+                //articles [obj,objs,asas,asa]
+                followers.add(follower);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return followers;
     }
 
 }

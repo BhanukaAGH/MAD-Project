@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blogosphere.database.ArticleModal;
 import com.example.blogosphere.database.DBHelper;
+import com.example.blogosphere.database.FollowModel;
 import com.example.blogosphere.database.ListModal;
 import com.example.blogosphere.database.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,6 +44,7 @@ public class Home extends AppCompatActivity {
     UserModel user;
     int userID;
     private List<ArticleModal> articles;
+    private List<FollowModel> followers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,16 +93,9 @@ public class Home extends AppCompatActivity {
 
 //       Home Content
         followingList = findViewById(R.id.following_list);
+        followers = myDB.getCurrentUserFollowers(Integer.toString(userID));
 
-        ArrayList<Followers> followers = new ArrayList<>();
-
-        followers.add(new Followers("Angelina", R.drawable.a));
-        followers.add(new Followers("Morgan", R.drawable.b));
-        followers.add(new Followers("Elina", R.drawable.c));
-        followers.add(new Followers("Taylor", R.drawable.d));
-
-
-        FollowingListRecViewAdapter adapter = new FollowingListRecViewAdapter();
+        FollowingListRecViewAdapter adapter = new FollowingListRecViewAdapter(myDB);
         adapter.setFollowers(followers);
 
         followingList.setAdapter(adapter);

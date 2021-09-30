@@ -33,6 +33,9 @@ public class Profile extends AppCompatActivity {
     DBHelper myDB;
     UserModel user;
     ArticleModal article;
+    TextView Followig;
+    ImageView UserProfileImage;
+    TextView UserProfileName;
 
     private List<ArticleModal> articles;
 
@@ -43,16 +46,15 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        Followig = findViewById(R.id.folowing);
         myDB = new DBHelper(this);
-
-//        Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
 
         userID = getIntent().getIntExtra("UserID",0);
         user = myDB.getUserbyID(userID);
+
+        // get Number of following
+        int count= myDB.CountRows(userID);
+        Followig.setText(count +" Following");
 
 //        Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -94,6 +96,11 @@ public class Profile extends AppCompatActivity {
 //        Hasith Code
         view = (ListView) findViewById(R.id.listviewpost);
         editbtnView = findViewById(R.id.edit);
+        UserProfileImage = findViewById(R.id.profile_image);
+        UserProfileName = findViewById(R.id.user_name);
+
+        UserProfileImage.setImageBitmap(myDB.getUserImageById(userID));
+        UserProfileName.setText(myDB.getUserNameById(userID));
 
         editbtnView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +114,7 @@ public class Profile extends AppCompatActivity {
 
 
 
-        articles = myDB.getCurrentUserAllArticles(Integer.toString(user.getId()));
+        articles = myDB.getCurrentUserAllArticles(Integer.toString(userID));
         UserAdapter apuser = new UserAdapter(this, R.layout.raw, articles, myDB);
         view.setAdapter(apuser);
 
@@ -209,10 +216,9 @@ class UserAdapter extends ArrayAdapter<ArticleModal> {
         TextView post = row.findViewById(R.id.post);
 
         ArticleModal article = articles.get(position);
-        imageView.setImageBitmap(article.getImage());
+        imageView.setImageBitmap(myDB.getUserImageById(article.getWriter_id()));
         articleImageView.setImageBitmap(article.getImage());
         textname.setText(myDB.getUserNameById(article.getWriter_id()));
-        textname.setText("Mark Dale");
         post.setText(article.getTitle());
 
         return row;

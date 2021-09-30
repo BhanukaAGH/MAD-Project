@@ -20,8 +20,7 @@ public class FollowingListRecViewAdapter extends  RecyclerView.Adapter<Following
     private List<FollowModel> followers = new ArrayList<>();
     private DBHelper myDB;
 
-    public FollowingListRecViewAdapter(DBHelper myDB) {
-        this.myDB = myDB;
+    public FollowingListRecViewAdapter() {
     }
 
     @NonNull
@@ -56,6 +55,7 @@ public class FollowingListRecViewAdapter extends  RecyclerView.Adapter<Following
             super(itemView);
             txtName = itemView.findViewById(R.id.txtName);
             followerImg = itemView.findViewById(R.id.followerImg);
+            myDB = new DBHelper(itemView.getContext());
         }
     }
 }

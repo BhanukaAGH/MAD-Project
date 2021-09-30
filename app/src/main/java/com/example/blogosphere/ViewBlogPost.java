@@ -35,7 +35,9 @@ public class ViewBlogPost extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ViewBlogPost.this,Home.class));
+        Intent backtoHome = new Intent(ViewBlogPost.this,Home.class);
+        backtoHome.putExtra("UserID", userID);
+        startActivity(backtoHome);
         overridePendingTransition(0, 0);
     }
 
@@ -45,13 +47,7 @@ public class ViewBlogPost extends AppCompatActivity {
         setContentView(R.layout.activity_view_blog_post);
 
         myDB = new DBHelper(this);
-
         // Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
-
         userID = getIntent().getIntExtra("UserID",0);
         user = myDB.getUserbyID(userID);
 
@@ -84,7 +80,7 @@ public class ViewBlogPost extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent viewCommentIntent = new Intent(ViewBlogPost.this, ViewComment.class);
-                viewCommentIntent.putExtra("UserObject", user);
+                viewCommentIntent.putExtra("UserID", userID);
                 viewCommentIntent.putExtra("StoryID", articleID);
                 startActivity(viewCommentIntent);
             }

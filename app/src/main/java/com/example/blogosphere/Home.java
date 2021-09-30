@@ -95,7 +95,7 @@ public class Home extends AppCompatActivity {
         followingList = findViewById(R.id.following_list);
         followers = myDB.getCurrentUserFollowers(Integer.toString(userID));
 
-        FollowingListRecViewAdapter adapter = new FollowingListRecViewAdapter(myDB);
+        FollowingListRecViewAdapter adapter = new FollowingListRecViewAdapter();
         adapter.setFollowers(followers);
 
         followingList.setAdapter(adapter);
@@ -112,6 +112,7 @@ public class Home extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ArticleModal article = articles.get(position);
                 Intent viewArticleIntent = new Intent(Home.this,ViewBlogPost.class);
+                viewArticleIntent.putExtra("UserID", userID);
                 viewArticleIntent.putExtra("StoryID",Integer.toString(article.getId()));
                 startActivity(viewArticleIntent);
                 overridePendingTransition(0, 0);

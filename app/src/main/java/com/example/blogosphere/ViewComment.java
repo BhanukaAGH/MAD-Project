@@ -47,12 +47,7 @@ public class ViewComment extends AppCompatActivity {
         context = this;
         myDB = new DBHelper(context);
 
-        // Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
-
+        // Get login user ID
         userID = getIntent().getIntExtra("UserID",0);
         articleId = getIntent().getStringExtra("StoryID");
         user = myDB.getUserbyID(userID);

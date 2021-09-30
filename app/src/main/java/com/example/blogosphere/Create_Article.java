@@ -252,7 +252,6 @@ public class Create_Article extends AppCompatActivity {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
                                 String tagName = userInput.getText().toString();
                                 tags.add(tagName);
                                 tagsList.setAdapter(adapter);
@@ -294,29 +293,33 @@ public class Create_Article extends AppCompatActivity {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                String articleTile = articleName.getText().toString();
-                                article.setTitle(articleTile);
-                                article.setContent(storyContent);
-                                article.setWriter_id(userID);
-                                date = new Date();
-                                article.setDate(String.format(" %tb %<te",date));
-                                boolean publishPost = myDB.publishArticle(article);
-                                dialog.cancel();
-                                // Insert Tags new Lines
-                                myDB.getArticleID(article);
-                                for(String tagname : tags){
-                                    myDB.insertArticleTags(article.getId(),tagname);
-                                }
-                                // new Lines End
-                                if (publishPost == true) {
-                                    Toasty.success(Create_Article.this, "Post Published.", Toast.LENGTH_SHORT, false).show();
-                                    Intent publishedIntent = new Intent(Create_Article.this, Home.class);
-                                    publishedIntent.putExtra("UserID", userID);
-                                    startActivity(publishedIntent);
-                                    overridePendingTransition(0, 0);
+                                if (article.getImage() != null && !articleName.getText().toString().isEmpty()) {
+                                    String articleTile = articleName.getText().toString();
+                                    article.setTitle(articleTile);
+                                    article.setContent(storyContent);
+                                    article.setWriter_id(userID);
+                                    date = new Date();
+                                    article.setDate(String.format(" %tb %<te", date));
+                                    boolean publishPost = myDB.publishArticle(article);
+                                    dialog.cancel();
+                                    // Insert Tags new Lines
+                                    myDB.getArticleID(article);
+                                    for (String tagname : tags) {
+                                        myDB.insertArticleTags(article.getId(), tagname);
+                                    }
+                                    // new Lines End
+                                    if (publishPost == true) {
+                                        Toasty.success(Create_Article.this, "Post Published.", Toast.LENGTH_SHORT, false).show();
+                                        Intent publishedIntent = new Intent(Create_Article.this, Home.class);
+                                        publishedIntent.putExtra("UserID", userID);
+                                        startActivity(publishedIntent);
+                                        overridePendingTransition(0, 0);
 
-                                } else {
-                                    Toasty.error(Create_Article.this, "Post Published Failed.", Toast.LENGTH_SHORT, false).show();
+                                    } else {
+                                        Toasty.error(Create_Article.this, "Post Published Failed.", Toast.LENGTH_SHORT, false).show();
+                                    }
+                                }else{
+                                    Toasty.warning(Create_Article.this, "You must include an image and a title to publish the article.", Toast.LENGTH_SHORT, false).show();
                                 }
 
                             }
@@ -359,19 +362,22 @@ public class Create_Article extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_FOR_ARTICLE) {
-            Uri articleuri = data.getData();
-            mEditor.insertImage(articleuri.toString(), "dachshund", 300);
-        } else if (requestCode == PICK_IMAGE) {
-            Uri articleImageuri = data.getData();
-            addImage.setImageURI(articleImageuri);
-//            new Line
-            try {
-                Bitmap imgtostore = MediaStore.Images.Media.getBitmap(getContentResolver(), articleImageuri);
-                article.setImage(imgtostore);
-            } catch (IOException e) {
-                Toasty.normal(this, e.getMessage()).show();
+            if(data != null){
+                Uri articleuri = data.getData();
+                mEditor.insertImage(articleuri.toString(), "dachshund", 300);
             }
-
+        } else if (requestCode == PICK_IMAGE) {
+            if (data != null) {
+                Uri articleImageuri = data.getData();
+                addImage.setImageURI(articleImageuri);
+//            new Line
+                try {
+                    Bitmap imgtostore = MediaStore.Images.Media.getBitmap(getContentResolver(), articleImageuri);
+                    article.setImage(imgtostore);
+                } catch (IOException e) {
+                    Toasty.normal(this, e.getMessage()).show();
+                }
+            }
         }
     }
 

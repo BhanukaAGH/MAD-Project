@@ -132,10 +132,9 @@ class OtherProfileAdapter extends ArrayAdapter<ArticleModal> {
         TextView post = row.findViewById(R.id.post);
 
         ArticleModal article = articles.get(position);
-        imageView.setImageBitmap(article.getImage());
+        imageView.setImageBitmap(myDB.getUserImageById(article.getWriter_id()));
         articleImageView.setImageBitmap(article.getImage());
         textname.setText(myDB.getUserNameById(article.getWriter_id()));
-        textname.setText("Mark Dale");
         post.setText(article.getTitle());
 
         return row;

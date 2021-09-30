@@ -57,7 +57,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@mipmap/ic_launcher_round" />
+                app:srcCompat="@drawable/user_default_img" />
 
         </androidx.cardview.widget.CardView>
 

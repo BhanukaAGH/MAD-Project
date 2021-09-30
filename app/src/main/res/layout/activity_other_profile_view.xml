@@ -65,7 +65,7 @@ tools:context=".OtherProfileView">
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/profileimage" />
+            android:src="@drawable/user_default_img" />
 
         <TextView
             android:id="@+id/user_name"

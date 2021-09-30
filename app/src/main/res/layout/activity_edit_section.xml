@@ -76,7 +76,7 @@
             android:id="@+id/Update_profile_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/profileimage" />
+            android:src="@drawable/user_default_img" />
 
         <Button
             android:id="@+id/user_name"

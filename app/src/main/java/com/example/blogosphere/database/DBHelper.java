@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 9;
+    private static final int VERSION = 10;
     private static final String DATABASE_NAME = "Blogosphere";
     private static final String USER_TABLE_NAME = "users";
     private static final String ARTICLE_TABLE_NAME = "articles";
@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LIST_TABLE_NAME = "List";
     private static final String COMMENT_TABLE_NAME = "comments";
     private static final String FOLLOWERS_TABLE_NAME = "followers";
+    private static final String BOOKMARK_ITEM_TABLE_NAME = "bookmarks";
 
     // User table column names
     private static final String COLUMN_USER_ID = "id";
@@ -57,10 +58,14 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_COMMENT_COMMENT = "comment";
     private static final String COLUMN_NAME_COMMENT_DATE = "date";
 
-    //Followers table column name
+    // Followers table column name
     private static final String COLUMN_NAME_CURRENT_ID = "current_id";
     private static final String COLUMN_NAME_FOLLOW_USER_ID = "follow_user_id";
 
+    // Bookmarks table column name
+    private static final String COLUMN_NAME_BOOKMARK_USER_ID = "user_id";
+    private static final String COLUMN_NAME_BOOKMARK_POST_ID = "post_id";
+    private static final String COLUMN_NAME_BOOKMARK_LIST_ID = "list_id";
 
     private ByteArrayOutputStream byteArrayOutputStream;
     private byte[] imageInBytes;
@@ -114,12 +119,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_NAME_FOLLOW_USER_ID + " INTEGER," +
                 "PRIMARY KEY (" + COLUMN_NAME_CURRENT_ID + "," + COLUMN_NAME_FOLLOW_USER_ID + ") );";
 
+        String BOOKMARKS_TABLE_CREATE_QUERY = "CREATE TABLE " + BOOKMARK_ITEM_TABLE_NAME + " (" +
+                COLUMN_NAME_BOOKMARK_USER_ID + " INTEGER," +
+                COLUMN_NAME_BOOKMARK_POST_ID + " INTEGER," +
+                COLUMN_NAME_BOOKMARK_LIST_ID + " INTEGER," +
+                "PRIMARY KEY (" + COLUMN_NAME_BOOKMARK_USER_ID + "," + COLUMN_NAME_BOOKMARK_POST_ID + "," + COLUMN_NAME_BOOKMARK_LIST_ID + ") );";
+
         db.execSQL(SQL_USER_CREATE_ENTRIES);
         db.execSQL(SQL_ARTICLE_CREATE_ENTRIES);
         db.execSQL(SQL_TAGS_CREATE_ENTRIES);
         db.execSQL(LIST_TABLE_CREATE_QUERY);
         db.execSQL(COMMENT_TABLE_CREATE_QUERY);
         db.execSQL(FOLLOWERS_TABLE_CREATE_QUERY);
+        db.execSQL(BOOKMARKS_TABLE_CREATE_QUERY);
     }
 
     @Override
@@ -130,6 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LIST_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + COMMENT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + FOLLOWERS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BOOKMARK_ITEM_TABLE_NAME);
         onCreate(db);
     }
 
@@ -697,5 +710,65 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return followers;
     }
+
+    /*++++++++++++++++++++++++ Bookmarks Table Methods ++++++++++++++++++++++++*/
+    public void addBookmarkItem(int userID, int postID, int listID) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_BOOKMARK_USER_ID, userID);
+        contentValues.put(COLUMN_NAME_BOOKMARK_POST_ID, postID);
+        contentValues.put(COLUMN_NAME_BOOKMARK_LIST_ID, listID);
+        long result = db.insert(BOOKMARK_ITEM_TABLE_NAME, null, contentValues);
+        db.close();
+    }
+
+    public void removeBookmarkItem(int userID, int postID, int listID) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(BOOKMARK_ITEM_TABLE_NAME, COLUMN_NAME_BOOKMARK_USER_ID + " =? and " + COLUMN_NAME_BOOKMARK_POST_ID + " =? and " + COLUMN_NAME_BOOKMARK_LIST_ID + " =?",
+                new String[]{Integer.toString(userID), Integer.toString(postID), Integer.toString(listID)});
+        db.close();
+    }
+
+    public boolean checkBookmarkClicked(int userID, int postID) {
+        SQLiteDatabase db = getWritableDatabase();
+        String CHECK_BOOKMARK_CLICKED = "SELECT * FROM " + BOOKMARK_ITEM_TABLE_NAME +
+                " WHERE " + COLUMN_NAME_BOOKMARK_USER_ID + " =? and " + COLUMN_NAME_BOOKMARK_POST_ID + " =?";
+        Cursor cursor = db.rawQuery(CHECK_BOOKMARK_CLICKED, new String[]{Integer.toString(userID), Integer.toString(postID)});
+
+        if (cursor.getCount() > 0) {
+            db.close();
+            return true;
+        } else {
+            db.close();
+            return false;
+        }
+    }
+
+    public List<Integer> getCurrentListPost(int userID, int ListID){
+        List<Integer> posts = new ArrayList();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT " + COLUMN_NAME_BOOKMARK_POST_ID + " FROM " + BOOKMARK_ITEM_TABLE_NAME +
+                " WHERE " + COLUMN_NAME_BOOKMARK_USER_ID + " =? and " + COLUMN_NAME_BOOKMARK_LIST_ID + " =?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(userID),Integer.toString(ListID)});
+        if (cursor.moveToFirst()) {
+            do {
+                posts.add(cursor.getInt(0));
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return posts;
+    }
+
+    public int CountListPosts(int ListID){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = " SELECT * FROM " + BOOKMARK_ITEM_TABLE_NAME + " WHERE " + COLUMN_NAME_BOOKMARK_LIST_ID + " =?";
+        Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(ListID)});
+        int i = cursor.getCount();
+        db.close();
+        return  i;
+    }
+
+
 
 }

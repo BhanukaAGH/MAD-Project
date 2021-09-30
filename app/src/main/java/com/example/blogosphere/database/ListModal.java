@@ -1,6 +1,8 @@
 package com.example.blogosphere.database;
 
-public class ListModal {
+import java.io.Serializable;
+
+public class ListModal implements Serializable {
 
     private int List_ID ,User_ID ,Story_Count;
     private String List_Topic,List_Description ;

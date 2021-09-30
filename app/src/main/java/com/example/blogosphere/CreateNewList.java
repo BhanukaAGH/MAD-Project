@@ -42,11 +42,6 @@ public class CreateNewList extends AppCompatActivity {
         myDB = new DBHelper(context);
 
         // Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
-
         userID = getIntent().getIntExtra("UserID",0);
         user = myDB.getUserbyID(userID);
 

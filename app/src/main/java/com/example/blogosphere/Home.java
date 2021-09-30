@@ -170,6 +170,13 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
         articleImgView.setImageBitmap(article.getImage());
         dateView.setText(article.getDate());
 
+        boolean checkedbookmarkClicked = myDB.checkBookmarkClicked(userID,article.getId());
+        if(checkedbookmarkClicked){
+            bookmarkIcon.setImageResource(R.drawable.ic_baseline_bookmark_24);
+        }else{
+            bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
+        }
+
         authorImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,32 +198,35 @@ class CustomAdapter extends ArrayAdapter<ArticleModal> {
                     singleItem[i] = s.getList_Topic();
                     i++;
                 }
-                int checkedItem = 1;
+                final int[] checkedItem = {0};
 
                 new MaterialAlertDialogBuilder(context)
                         .setTitle("Bookmark List")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
+
                             }
                         })
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 bookmarkIcon.setImageResource(R.drawable.ic_baseline_bookmark_24);
+                                myDB.addBookmarkItem(userID,article.getId(),bookmarkList.get(checkedItem[0]).getList_ID());
                             }
                         })
                         .setNeutralButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 bookmarkIcon.setImageResource(R.drawable.ic_outline_bookmark_border_24);
+                                myDB.removeBookmarkItem(userID,article.getId(),bookmarkList.get(checkedItem[0]).getList_ID());
+
                             }
                         })
-                        .setSingleChoiceItems(singleItem, checkedItem, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(singleItem, checkedItem[0], new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                System.out.println(singleItem[which]);
+                                checkedItem[0] = which;
                             }
                         })
                         .show();

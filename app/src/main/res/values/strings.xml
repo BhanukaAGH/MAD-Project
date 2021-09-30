@@ -68,7 +68,7 @@
     <string name="tv_date1">date</string>
     <!-- viewdwd list -->
     <string name="tv_top6">Buy these products in future</string>
-    <string name="tv_topstorycount">6 Stories</string>
+    <string name="tv_topstorycount">0 Stories</string>
     <string name="tv_topdate1">2020/08/12</string>
     <string name="btn_deletelist">Delete list</string>
     <string name="btn_editlist">Edit List</string>

@@ -29,14 +29,12 @@ import java.util.List;
 
 public class Bookmarks extends AppCompatActivity {
 
-    private Button start_now ;
+    private Button start_now;
     private ListView rowreadinglistView;
-    private List<ListModal> listmodel ;
-    Context context ;
+    private List<ListModal> listmodel;
+    Context context;
     private DBHelper myDB;
-
     UserModel user;
-
     int userID;
 
     @Override
@@ -46,13 +44,7 @@ public class Bookmarks extends AppCompatActivity {
 
         myDB = new DBHelper(this);
 
-//        Get login user object
-//        if (user == null) {
-//            Intent i = getIntent();
-//            user = (UserModel) i.getSerializableExtra("UserObject");
-//        }
-
-        userID = getIntent().getIntExtra("UserID",0);
+        userID = getIntent().getIntExtra("UserID", 0);
         user = myDB.getUserbyID(userID);
 
 //        Initialize And Assign Variable
@@ -92,7 +84,6 @@ public class Bookmarks extends AppCompatActivity {
         });
 
 
-
         // Gihan Line
         context = this;
 
@@ -101,13 +92,13 @@ public class Bookmarks extends AppCompatActivity {
         listmodel = new ArrayList<>();
         listmodel = myDB.getAllLists();
 
-        CustomAdapter_List_HomePage adapter = new CustomAdapter_List_HomePage(context,R.layout.rowreadinglists,listmodel);
+        CustomAdapter_List_HomePage adapter = new CustomAdapter_List_HomePage(context, R.layout.rowreadinglists, listmodel, myDB);
         rowreadinglistView.setAdapter(adapter);
 
         start_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),CreateNewList.class);
+                Intent i = new Intent(getApplicationContext(), CreateNewList.class);
                 i.putExtra("UserID", userID);
                 Toast.makeText(getApplicationContext(), "create new list has pressed", Toast.LENGTH_SHORT).show();
                 startActivity(i);
@@ -118,12 +109,10 @@ public class Bookmarks extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ListModal listmodels = listmodel.get(i);
-                String list_id = String.valueOf(listmodels.getList_ID());
-                String list_topic = listmodels.getList_Topic();
-                Intent newI = new Intent(context,NewViewedList.class);
-                newI.putExtra("listID",list_id);
-                newI.putExtra("listTOPIC",list_topic);
-
+                Intent newI = new Intent(context, NewViewedList.class);
+                newI.putExtra("UserID", userID);
+                newI.putExtra("listItems", listmodels);
+                startActivity(newI);
             }
         });
 
@@ -141,7 +130,7 @@ public class Bookmarks extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         myDB.deleteList(listmodelsLongClick.getList_ID());
-                        Intent bookmarkI = new Intent(context,Bookmarks.class);
+                        Intent bookmarkI = new Intent(context, Bookmarks.class);
                         bookmarkI.putExtra("UserID", userID);
                         startActivity(bookmarkI);
                     }
@@ -150,9 +139,9 @@ public class Bookmarks extends AppCompatActivity {
                 builder.setNegativeButton("update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(context,NewEditList.class);
+                        Intent intent = new Intent(context, NewEditList.class);
                         intent.putExtra("UserID", userID);
-                        intent.putExtra("LIST_ID",String.valueOf(listmodelsLongClick.getList_ID()));
+                        intent.putExtra("LIST_ID", String.valueOf(listmodelsLongClick.getList_ID()));
                         startActivity(intent);
                     }
                 });
@@ -169,21 +158,23 @@ public class Bookmarks extends AppCompatActivity {
 class CustomAdapter_List_HomePage extends ArrayAdapter<ListModal> {
 
     private Context context;
-    private int resource ;
-    List<ListModal> listmodel ;
+    private int resource;
+    List<ListModal> listmodel;
+    private DBHelper myDB;
 
-    public CustomAdapter_List_HomePage(@NonNull Context context, int resource, List<ListModal> listmodel) {
-        super(context, resource,listmodel);
+    public CustomAdapter_List_HomePage(@NonNull Context context, int resource, List<ListModal> listmodel, DBHelper myDB) {
+        super(context, resource, listmodel);
         this.context = context;
-        this.resource = resource ;
-        this.listmodel = listmodel ;
+        this.resource = resource;
+        this.listmodel = listmodel;
+        this.myDB = myDB;
     }
 
     @NonNull
     @Override
-    public View getView(int position,View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View row = inflater.inflate(resource,parent,false);
+        View row = inflater.inflate(resource, parent, false);
 
         TextView listTopicView = row.findViewById(R.id.tv_listtitle1);
         TextView listDiscriptionView = row.findViewById(R.id.tv_listdiscription);
@@ -194,7 +185,7 @@ class CustomAdapter_List_HomePage extends ArrayAdapter<ListModal> {
         ListModal Lmodels = listmodel.get(position);
         listTopicView.setText(Lmodels.getList_Topic());
         listDiscriptionView.setText(Lmodels.getList_Description());
-        storyCountView.setText(Integer.toString(Lmodels.getStory_Count()));
+        storyCountView.setText(Integer.toString(myDB.CountListPosts(Lmodels.getList_ID())) + " Stories");
         publishDateView.setText(Lmodels.getCreated_date());
 
         return row;

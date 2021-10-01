@@ -697,13 +697,9 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, new String[]{userID});
         if (cursor.moveToFirst()) {
             do {
-                // Create new ArticleModel object
                 FollowModel follower = new FollowModel();
-                // set methods
                 follower.setCurrentid(cursor.getInt(0));
                 follower.setUserid(cursor.getInt(1));
-
-                //articles [obj,objs,asas,asa]
                 followers.add(follower);
             } while (cursor.moveToNext());
         }

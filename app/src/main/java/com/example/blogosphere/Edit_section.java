@@ -37,10 +37,10 @@ public class Edit_section extends AppCompatActivity {
     private Button save;
     private Button deleteaccount;
     private ImageView imgeview;
+    private ImageView Goback;
     private DBHelper myDB;
     private Bitmap selectimage;
     UserModel user;
-
     int userID;
 
     @Override
@@ -62,6 +62,7 @@ public class Edit_section extends AppCompatActivity {
         imgeview = findViewById(R.id.Update_profile_image);
         btnUpdateView = findViewById(R.id.upate);
         deleteaccount = findViewById(R.id.delete);
+        Goback = findViewById(R.id.goback);
 
         if(user.getImage() != null ){
             imgeview.setImageBitmap(user.getImage());
@@ -73,6 +74,15 @@ public class Edit_section extends AppCompatActivity {
         String checkname = name.getText().toString();
         String checkemail = email.getText().toString();
 
+        Goback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent noIntent = new Intent(context, Profile.class);
+                noIntent.putExtra("UserID", userID);
+                startActivity(noIntent);
+                overridePendingTransition(0,0);
+            }
+        });
 
         choosebtn.setOnClickListener(new View.OnClickListener() {
             @Override

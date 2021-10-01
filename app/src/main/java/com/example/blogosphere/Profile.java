@@ -12,10 +12,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.blogosphere.database.ArticleModal;
@@ -36,9 +38,8 @@ public class Profile extends AppCompatActivity {
     TextView Followig;
     ImageView UserProfileImage;
     TextView UserProfileName;
-
+    ImageView VerticalIcon;
     private List<ArticleModal> articles;
-
     int userID;
 
     @Override
@@ -55,6 +56,46 @@ public class Profile extends AppCompatActivity {
         // get Number of following
         int count= myDB.CountRows(userID);
         Followig.setText(count +" Following");
+
+        VerticalIcon = findViewById(R.id.logouticon);
+        VerticalIcon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popupMenu =  new PopupMenu(getApplicationContext(),VerticalIcon);
+                popupMenu.getMenuInflater().inflate(R.menu.logout,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.log:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                                builder.setTitle("Do You Want To Log out From the Account");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent noIntent = new Intent(Profile.this, FirstView.class);
+                                        startActivity(noIntent);
+                                        overridePendingTransition(0,0);
+                                    }
+                                });
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent noIntent = new Intent(Profile.this, Profile.class);
+                                        noIntent.putExtra("UserID", userID);
+                                        startActivity(noIntent);
+                                        overridePendingTransition(0,0);
+                                    }
+                                });
+                                builder.show();
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return false;
+            }
+        });
 
 //        Initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -99,7 +140,10 @@ public class Profile extends AppCompatActivity {
         UserProfileImage = findViewById(R.id.profile_image);
         UserProfileName = findViewById(R.id.user_name);
 
-        UserProfileImage.setImageBitmap(myDB.getUserImageById(userID));
+        if(myDB.getUserImageById(userID) != null){
+            UserProfileImage.setImageBitmap(myDB.getUserImageById(userID));
+        }
+
         UserProfileName.setText(myDB.getUserNameById(userID));
 
         editbtnView.setOnClickListener(new View.OnClickListener() {

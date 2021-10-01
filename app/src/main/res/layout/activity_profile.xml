@@ -82,20 +82,27 @@
         >
 
         <RelativeLayout
+            android:id="@+id/pro_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/pro_info"
             android:layout_below="@+id/heder"
-            android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
-            >
+            android:layout_marginTop="5dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
                 android:src="@drawable/user_default_img" />
+
+            <ImageView
+                android:id="@+id/logouticon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/profile_image"
+                android:src="@drawable/ic_verticaldot" />
 
             <TextView
                 android:id="@+id/user_name"
@@ -106,7 +113,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Mark Dale"
                 android:textSize="18sp" />
-
 
 
         </RelativeLayout>
